@@ -2,12 +2,7 @@
 // Created by Jean on 09.06.2017.
 //
 
-#include <iostream>
-#include <vector>
-#include <string>
 #include "token.h"
-
-using namespace std;
 
 /*class token:
 1     ind = 1
@@ -18,12 +13,18 @@ using namespace std;
 6     head = 2
 7     type = "NMOD"*/
 
-class Token {
-public: int index, head;
-public: string word, base, pos, pos2, type;
-public:
-    Token() {};
-    Token(int indexparam, string wordparam, string baseparam, string posparam, string pos2param, int headparam,
-          string typeparam) {index = indexparam, word = wordparam, base = baseparam, pos = posparam, pos2 = pos2param,
-                             head = headparam, type = typeparam;};
-};
+Token::Token () {
+        index =2;
+        head = 2;
+        word = "";
+        base = "";
+        pos = "";
+        type = "";
+    };
+Token::Token (int indexparam, string wordparam, string baseparam,
+                string posparam, int headparam, string typeparam){
+
+                        index = indexparam, word = wordparam,
+                        base = baseparam, pos = posparam,
+                        head = headparam, type = typeparam;};
+

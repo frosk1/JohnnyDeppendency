@@ -1,6 +1,4 @@
 #include <iostream>
-#include <string>
-#include <sstream>
 #include <fstream>
 #include "utils.h"
 using namespace std;
@@ -11,6 +9,7 @@ int main() {
     int f = 0;
     bool not_sent_end = true;
     ifstream myfile ("../resource/wsj_dev.conll06.gold");
+    vector<vector<string>> sen_tokens;
     if (myfile.is_open())
     {
         while ( getline (myfile,line) && f < 30 )
@@ -20,8 +19,16 @@ int main() {
             if (line!= ""){
                 c++;
                 vector<string> tokens = tokenizer(line, '\t');
+                sen_tokens.push_back(tokens);
             }
             else {
+                vector<Token> tokens = make_token(sen_tokens);
+
+
+
+
+
+                sen_tokens.clear();
                 c = 1;
 
             }
@@ -39,6 +46,12 @@ int main() {
 //    pos2 = ""
 //    head = 2
 //    type = "NMOD"
+    /*
+     *
+     * [[string1, string2, string3],
+     *  [string1, string2, string3,
+     *  .....]
+     */
 //
 //
 //    def parse(sent, Oracle=True, Classfi=False):
