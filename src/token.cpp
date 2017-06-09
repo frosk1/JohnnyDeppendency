@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "../include/token.h"
+#include "token.h"
 
 using namespace std;
 
