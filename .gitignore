@@ -24,6 +24,7 @@
 *.lai
 *.la
 *.a
+
 *.lib
 
 # Executables
@@ -38,5 +39,5 @@
 CMakeLists.txt
 
 # ignore cmake build debug dir
-.cmake-build-debug/
-.cmake-build-debug/*
+cmake-build-debug/
+cmake-build-debug/*
