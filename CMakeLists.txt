@@ -9,4 +9,4 @@ include_directories(include)
 #However, the file(GLOB...) allows for wildcard additions:
 file(GLOB SOURCE_FILES "src/*.cpp")
 
-add_executable(JohnnyDeppendency ${SOURCE_FILES})
+add_executable(JohnnyDeppendency ${SOURCE_FILES} src/token.cpp include/token.h)

@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/JohnnyDeppendency.dir/src/main.cpp.o"
+  "CMakeFiles/JohnnyDeppendency.dir/src/token.cpp.o"
   "JohnnyDeppendency.pdb"
   "JohnnyDeppendency"
 )

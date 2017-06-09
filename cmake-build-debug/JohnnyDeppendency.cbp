@@ -82,7 +82,13 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/frosk/Development/JohnnyDeppendency/include/token.h">
+			<Option target="JohnnyDeppendency"/>
+		</Unit>
 		<Unit filename="/home/frosk/Development/JohnnyDeppendency/src/main.cpp">
+			<Option target="JohnnyDeppendency"/>
+		</Unit>
+		<Unit filename="/home/frosk/Development/JohnnyDeppendency/src/token.cpp">
 			<Option target="JohnnyDeppendency"/>
 		</Unit>
 		<Unit filename="/home/frosk/Development/JohnnyDeppendency/CMakeLists.txt">
