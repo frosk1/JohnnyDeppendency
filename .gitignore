@@ -33,3 +33,9 @@
 
 # ignore jetbrains stuff
 .idea/
+
+# ignore cmkae conf
+CMakeLists.txt
+
+# ignore cmake build debug dir
+.cmake-build-debug/
