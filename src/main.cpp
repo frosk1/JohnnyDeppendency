@@ -10,7 +10,7 @@ int main() {
     int c = 0;
     int f = 0;
     bool not_sent_end = true;
-    ifstream myfile ("/home/frosk/dev/wsj_dev.conll06.gold");
+    ifstream myfile ("../resource/wsj_dev.conll06.gold");
     if (myfile.is_open())
     {
         while ( getline (myfile,line) && f < 30 )
