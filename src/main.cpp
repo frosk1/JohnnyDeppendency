@@ -1,10 +1,11 @@
 #include <iostream>
 #include <fstream>
 #include "utils.h"
-using namespace std;
+#include "oracle.h"
 
 int main() {
     string line;
+    bool oracle = true;
     int c = 0;
     int f = 0;
     bool not_sent_end = true;
@@ -15,17 +16,47 @@ int main() {
         while ( getline (myfile,line) && f < 30 )
         {
             cout << "C:"<< c << endl;
-//            cout << line<< endl;
             if (line!= ""){
+
                 c++;
                 vector<string> tokens = tokenizer(line, '\t');
                 sen_tokens.push_back(tokens);
             }
+
             else {
                 vector<Token> tokens = make_token(sen_tokens);
+//              conf =  [[t0] [t1,t2,t3,t4,t5]]
+                vector<vector<Token>> configuration = init_conf(tokens);
+                vector<tuple<int,int>> arc_set;
+
+//                  while buffer is not emtpy
+                    while (configuration[1].size() > 0){
+
+                        if (oracle){
+
+//                          action, arc_set = Oracle(conf)
+                            tuple<string,vector<tuple<int,int>>> oracle_result = oracle(configuration,
+                                                                                        arc_set,"eager");
+                            string action;
+                            action = get<0>(oracle_result);
+                            arc_set = get<1>(oracle_result);
+
+                            
+//                          feat_vec = make_feat_vec(conf)
+//                          # X, y
+//                          train_perc(feat_vec, action)
+//                          conf = parser(action)
 
 
 
+                        }
+
+                        else {
+
+
+
+                        }
+                    }
 
 
                 sen_tokens.clear();

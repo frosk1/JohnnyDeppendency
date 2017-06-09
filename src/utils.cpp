@@ -28,3 +28,14 @@ vector<Token> make_token(vector<vector<string>> sen_tokens){
 
 }
 
+vector<vector<Token>> init_conf(vector<Token> tokens){
+    vector<vector<Token>> configuration;
+    Token root;
+    configuration.push_back(vector<Token>{root});
+    configuration.push_back(tokens);
+
+    return configuration;
+}
+
+
+

@@ -10,5 +10,6 @@ using namespace std;
 
 vector<string> tokenizer(string sent, char delimiter);
 vector<Token> make_token(vector<vector<string>> sen_tokens);
+vector<vector<Token>> init_conf(vector<Token> tokens);
 
 #endif //JOHNNYDEPPENDENCY_UTILS_H

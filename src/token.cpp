@@ -14,13 +14,12 @@
 7     type = "NMOD"*/
 
 Token::Token () {
-        index =2;
-        head = 2;
-        word = "";
-        base = "";
-        pos = "";
-        type = "";
+        index = 0;
+        word = "Root";
+        base = "root";
+        pos = "root";
     };
+
 Token::Token (int indexparam, string wordparam, string baseparam,
                 string posparam, int headparam, string typeparam){
 
