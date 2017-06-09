@@ -11,5 +11,8 @@ using namespace std;
 
 tuple<string,vector<tuple<int,int>>> oracle(vector<vector<Token>> configuration,
                                             vector<tuple<int,int>> arc_set ,
-                                            string type="eager");
+                                            string type);
+vector<vector<Token>> parser(vector<vector<Token>> configuration,
+                             string action,
+                             string type);
 #endif //JOHNNYDEPPENDENCY_ORACLE_H

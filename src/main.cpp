@@ -5,15 +5,16 @@
 
 int main() {
     string line;
-    bool oracle = true;
+    bool oracle_bool = true;
     int c = 0;
     int f = 0;
     bool not_sent_end = true;
     ifstream myfile ("../resource/wsj_dev.conll06.gold");
     vector<vector<string>> sen_tokens;
+    string type = "standard";
     if (myfile.is_open())
     {
-        while ( getline (myfile,line) && f < 30 )
+        while ( getline (myfile,line) && f < 26 )
         {
             cout << "C:"<< c << endl;
             if (line!= ""){
@@ -32,28 +33,36 @@ int main() {
 //                  while buffer is not emtpy
                     while (configuration[1].size() > 0){
 
-                        if (oracle){
+                        if (oracle_bool){
 
 //                          action, arc_set = Oracle(conf)
                             tuple<string,vector<tuple<int,int>>> oracle_result = oracle(configuration,
-                                                                                        arc_set,"eager");
+                                                                                        arc_set, type);
                             string action;
                             action = get<0>(oracle_result);
                             arc_set = get<1>(oracle_result);
 
-                            
+
+                            cout << "STACK:" << endl;
+                            for (Token t: configuration[0]){
+                                cout << t.word << " ";
+                            }
+                            cout << "\nBuffer:" << endl;
+                            for (Token t: configuration[1]){
+                                cout << t.word << " ";
+                            }
+                            cout << endl<< "+++++++"+action +"+++++++" << endl;
+
 //                          feat_vec = make_feat_vec(conf)
 //                          # X, y
 //                          train_perc(feat_vec, action)
 //                          conf = parser(action)
-
-
+                            configuration = parser(configuration, action, type);
 
                         }
 
                         else {
-
-
+                            cout << "using perceptrion";
 
                         }
                     }
@@ -93,7 +102,7 @@ int main() {
 //# [[t0] [t1,t2,t3,t4,t5]]
 //
 //    while buffer not empty:
-//# oracle has extract feat method
+//# oracle_bool has extract feat method
 //    feat_vec, action = Oracle(conf)
 //# X, y
 //    train_perc(feat_vec, action)
