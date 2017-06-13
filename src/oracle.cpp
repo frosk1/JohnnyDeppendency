@@ -116,10 +116,6 @@ vector<vector<Token>> parser(
     vector<Token> buffer = configuration[1];
     Token stack_top = stack.back();
     Token buffer_front = buffer[0];
-    int stack_top_head = stack_top.head;
-    int stack_top_ind = stack_top.index;
-    int buffer_front_head = buffer_front.head;
-    int buffer_front_ind = buffer_front.index;
 
 
    if (type == "standard") {
