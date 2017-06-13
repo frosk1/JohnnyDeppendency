@@ -28,7 +28,7 @@ int main() {
                 vector<Token> tokens = make_token(sen_tokens);
 //              conf =  [[t0] [t1,t2,t3,t4,t5]]
                 vector<vector<Token>> configuration = init_conf(tokens);
-                vector<tuple<int,int>> arc_set;
+                vector<tuple<Token,Token>> arc_set;
 
 //                  while buffer is not emtpy
                     while (configuration[1].size() > 0){
@@ -36,7 +36,7 @@ int main() {
                         if (oracle_bool){
 
 //                          action, arc_set = Oracle(conf)
-                            tuple<string,vector<tuple<int,int>>> oracle_result = oracle(configuration,
+                            tuple<string,vector<tuple<Token,Token>>> oracle_result = oracle(configuration,
                                                                                         arc_set, type);
                             string action;
                             action = get<0>(oracle_result);

@@ -9,8 +9,8 @@ using namespace std;
 #ifndef JOHNNYDEPPENDENCY_ORACLE_H
 #define JOHNNYDEPPENDENCY_ORACLE_H
 
-tuple<string,vector<tuple<int,int>>> oracle(vector<vector<Token>> configuration,
-                                            vector<tuple<int,int>> arc_set ,
+tuple<string,vector<tuple<Token,Token>>> oracle(vector<vector<Token>> configuration,
+                                            vector<tuple<Token,Token>> arc_set ,
                                             string type);
 vector<vector<Token>> parser(vector<vector<Token>> configuration,
                              string action,
