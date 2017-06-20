@@ -2,7 +2,7 @@
 // Created by frosk on 09.06.17.
 //
 #include "oracle.h"
-
+#include <typeinfo>
 
 
 bool hasallchildren(int cur_token_ind, vector<Token> buffer, string type){
@@ -33,11 +33,22 @@ bool hasallchildren(int cur_token_ind, vector<Token> buffer, string type){
 
 bool hashead(int stack_top_ind, vector<tuple<Token,Token>> arc_set){
     for (tuple<Token,Token> arc : arc_set){
+        cout << get<0>(arc).word << "::" << get<1>(arc).word << endl;
        if (stack_top_ind == get<1>(arc).index){
           return true;
        }
     }
     return false;
+}
+
+
+bool stackisnotroot(Token top_stack){
+    if (top_stack.word == "Root"){
+        return false;
+    }
+    else{
+        return true;
+    }
 
 }
 
@@ -46,7 +57,14 @@ tuple<string,vector<tuple<Token,Token>>> standard_action(
         vector<tuple<Token,Token>> arc_set,
         string type)
 {
+
     vector<Token> stack = configuration[0];
+
+    if (stack.size() == 0){
+        tuple<string, vector<tuple<Token,Token>>> action ("shift", arc_set);
+        return action;
+    }
+
     vector<Token> buffer = configuration[1];
     Token stack_top = stack.back();
     Token buffer_front = buffer[0];
@@ -56,7 +74,7 @@ tuple<string,vector<tuple<Token,Token>>> standard_action(
     int buffer_front_ind = buffer_front.index;
 
 
-    if (stack_top_head == buffer_front_ind) {
+    if (stack_top_head == buffer_front_ind && stackisnotroot(stack_top)) {
         arc_set.push_back( tuple<Token,Token> (buffer_front, stack_top));
 
         tuple<string, vector<tuple<Token,Token>>> action ("LA", arc_set);
@@ -89,7 +107,7 @@ tuple<string,vector<tuple<Token,Token>>> eager_action(
     int buffer_front_ind = buffer_front.index;
 
 
-    if (stack_top_head == buffer_front_ind) {
+    if (stack_top_head == buffer_front_ind && stackisnotroot(stack_top)) {
         arc_set.push_back( tuple<Token,Token> (buffer_front, stack_top));
 
         tuple<string, vector<tuple<Token,Token>>> action ("LA", arc_set);
@@ -132,9 +150,6 @@ vector<vector<Token>> parser(
     vector<Token> stack = configuration[0];
     vector<Token> buffer = configuration[1];
 
-
-    Token stack_top = stack.back();
-    Token buffer_front = buffer[0];
     int dummy;
 
 
@@ -145,12 +160,12 @@ vector<vector<Token>> parser(
        }
        else if (action == "RA") {
 //           move top stack to front buffer; deleting front buffer with assignment
-          buffer_front = stack_top;
+           buffer[0] = stack.back();
            stack.pop_back();
        }
        else {
 //           move front of buffer to top of stack; no stack deletion, but buffer front deletion
-           stack.push_back(buffer_front);
+           stack.push_back(buffer[0]);
            buffer.erase(buffer.begin());
        }
    }
@@ -163,7 +178,7 @@ vector<vector<Token>> parser(
        }
        else if (action == "RA" || action == "shift") {
 //           move front of buffer to top of stack; no stack deletion, but buffer front deletion
-           stack.push_back(buffer_front);
+           stack.push_back(buffer[0]);
            buffer.erase(buffer.begin());
        }
    }

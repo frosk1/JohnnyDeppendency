@@ -10,8 +10,8 @@
 #include <tuple>
 
 vector<string> feature_extraction(vector<vector<Token>> conf, vector<tuple<Token,Token>> arc_set){
-    vector<Token> buffer = conf[0];
-    vector<Token> stack = conf[1];
+    vector<Token> buffer = conf[1];
+    vector<Token> stack = conf[0];
 
     vector<string> feature_vector;
     for ( Token token : stack ) {

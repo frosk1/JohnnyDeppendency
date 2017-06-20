@@ -13,6 +13,6 @@
 class feature_ex {
 
 };
-vector<string> feature_extraction(vector<vector<Token>> conf);
+vector<string> feature_extraction(vector<vector<Token>> conf, vector<tuple<Token,Token>> arc_set);
 
 #endif //JOHNNYDEPPENDENCY_FEATURE_EX_H

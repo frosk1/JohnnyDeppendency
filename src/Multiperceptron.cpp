@@ -36,7 +36,10 @@ void Multiperceptron::train(vector<string> feature_vector, string label) {
 
 void Multiperceptron::learn_2(vector<string> feature_vector, string label) {
     string best_label = this->best_perceptron(feature_vector);
+    cout << best_label << label << endl;
+
     if (best_label != label){
+        cout << "update" << endl;
         perceptrons[best_label].subtract(feature_vector);
         perceptrons[label].add(feature_vector);
     }
