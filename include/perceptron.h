@@ -13,6 +13,7 @@ public:
     unordered_map<string, double> weightVector;
     string label;
     Perceptron(string label);
+    Perceptron();
     void initialize(string feature);
     void add(vector<string> feature_vector);
     void subtract(vector<string> feature_vector);

@@ -112,10 +112,14 @@ vector<vector<Token>> parser(
         vector<vector<Token>> configuration,
         string action,
         string type) {
+
     vector<Token> stack = configuration[0];
     vector<Token> buffer = configuration[1];
+
+
     Token stack_top = stack.back();
     Token buffer_front = buffer[0];
+    int dummy;
 
 
    if (type == "standard") {
@@ -148,5 +152,7 @@ vector<vector<Token>> parser(
        }
    }
 
+    configuration[0] = stack;
+    configuration[1] = buffer;
     return configuration;
 }

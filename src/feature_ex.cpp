@@ -7,6 +7,7 @@
 #include <vector>
 #include "token.h"
 #include "utils.h"
+#include <tuple>
 
 vector<string> feature_extraction(vector<vector<Token>> conf, vector<tuple<Token,Token>> arc_set){
     vector<Token> buffer = conf[0];

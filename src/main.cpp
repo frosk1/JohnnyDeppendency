@@ -4,6 +4,7 @@
 #include "oracle.h"
 
 int main() {
+
     string line;
     bool oracle_bool = true;
     int c = 0;
@@ -11,7 +12,7 @@ int main() {
     bool not_sent_end = true;
     ifstream myfile ("../resource/wsj_dev.conll06.gold");
     vector<vector<string>> sen_tokens;
-    string type = "standard";
+    string type = "eager";
     if (myfile.is_open())
     {
         while ( getline (myfile,line) && f < 26 )
@@ -58,6 +59,7 @@ int main() {
 //                          train_perc(feat_vec, action)
 //                          conf = parser(action)
                             configuration = parser(configuration, action, type);
+                            int s = 0;
 
                         }
 
