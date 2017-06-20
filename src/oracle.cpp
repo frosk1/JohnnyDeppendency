@@ -5,31 +5,46 @@
 
 
 
-bool hasallchildren(int cur_token_ind, vector<Token> buffer){
-    for (int i = 1; i < buffer.size(); ++i) {
-        if (cur_token_ind == buffer[i].head) {
-            cout << cur_token_ind << endl;
-            cout << buffer[i].head << endl;
-            return false;
+bool hasallchildren(int cur_token_ind, vector<Token> buffer, string type){
+    if(type == "standard") {
+        // standard: start by 1 to skip buffer front
+        for (int i=1; i < buffer.size(); ++i) {
+            if (cur_token_ind == buffer[i].head) {
+                //            cout << cur_token_ind << endl;
+                //            cout << buffer[i].head << endl;
+                return false;
+            }
         }
+        return true;
     }
-    return true;
+    else {
+        // eager: start by 0 to get all buffer elements
+        for (int i=0; i < buffer.size(); ++i) {
+            if (cur_token_ind == buffer[i].head) {
+                //            cout << cur_token_ind << endl;
+                //            cout << buffer[i].head << endl;
+                return false;
+            }
+        }
+        return true;
+    }
 }
+
 
 bool hashead(int stack_top_ind, vector<tuple<Token,Token>> arc_set){
     for (tuple<Token,Token> arc : arc_set){
        if (stack_top_ind == get<1>(arc).index){
           return true;
        }
-        else{
-           return false;
-       }
     }
+    return false;
+
 }
 
 tuple<string,vector<tuple<Token,Token>>> standard_action(
         vector<vector<Token>> configuration,
-        vector<tuple<Token,Token>> arc_set )
+        vector<tuple<Token,Token>> arc_set,
+        string type)
 {
     vector<Token> stack = configuration[0];
     vector<Token> buffer = configuration[1];
@@ -46,7 +61,7 @@ tuple<string,vector<tuple<Token,Token>>> standard_action(
 
         tuple<string, vector<tuple<Token,Token>>> action ("LA", arc_set);
         return action;
-    } else if (buffer_front_head == stack_top_ind &&  hasallchildren(buffer_front_ind, buffer)) {
+    } else if (buffer_front_head == stack_top_ind &&  hasallchildren(buffer_front_ind, buffer, type)) {
         arc_set.push_back( tuple<Token,Token> (stack_top, buffer_front));
 
         tuple<string, vector<tuple<Token,Token>>> action ("RA", arc_set);
@@ -60,7 +75,8 @@ tuple<string,vector<tuple<Token,Token>>> standard_action(
 
 tuple<string,vector<tuple<Token,Token>>> eager_action(
         vector<vector<Token>> configuration,
-        vector<tuple<Token,Token>> arc_set)
+        vector<tuple<Token,Token>> arc_set,
+        string type)
 {
 
     vector<Token> stack = configuration[0];
@@ -85,7 +101,7 @@ tuple<string,vector<tuple<Token,Token>>> eager_action(
         tuple<string, vector<tuple<Token,Token>>> action ("RA", arc_set);
         return action;
     }
-    else if( hashead(stack_top_ind, arc_set) && hasallchildren(stack_top_ind, buffer)){
+    else if( hashead(stack_top_ind, arc_set) && hasallchildren(stack_top_ind, buffer, type)){
             tuple<string, vector<tuple<Token,Token>>> action ("reduce", arc_set);
             return action;
         }
@@ -101,10 +117,10 @@ tuple<string,vector<tuple<Token,Token>>> oracle(vector<vector<Token>> configurat
                                             string type){
 
     if (type == "standard") {
-        return standard_action(configuration, arc_set);
+        return standard_action(configuration, arc_set, type);
     }
     else {
-        return eager_action(configuration, arc_set);
+        return eager_action(configuration, arc_set, type);
     }
 }
 

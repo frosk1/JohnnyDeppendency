@@ -15,7 +15,7 @@ int main() {
     string type = "eager";
     if (myfile.is_open())
     {
-        while ( getline (myfile,line) && f < 26 )
+        while ( getline (myfile,line) && f < 55 )
         {
             cout << "C:"<< c << endl;
             if (line!= ""){
