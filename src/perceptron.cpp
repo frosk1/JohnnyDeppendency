@@ -3,6 +3,7 @@
 //
 
 #include "perceptron.h"
+#include <iostream>
 
 Perceptron::Perceptron(string inlabel) {
     label = inlabel;
@@ -19,14 +20,16 @@ void Perceptron::initialize(string feature) {
 void Perceptron::add(vector<string> feature_vector) {
    for (string feature: feature_vector){
        double value = weightVector[feature];
-       weightVector.emplace(feature, value +1);
+       value = value +1;
+       weightVector[feature] = value;
    }
 }
 
 void Perceptron::subtract(vector<string> feature_vector){
    for (string feature: feature_vector){
        double value = weightVector[feature];
-       weightVector.emplace(feature, value -1);
+       value = value -1;
+       weightVector[feature] = value;
    }
 }
 

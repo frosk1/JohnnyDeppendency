@@ -30,19 +30,30 @@ void Multiperceptron::initperceptron() {
    }
 }
 
-void Multiperceptron::train(vector<string> feature_vector, string label) {
-    this->learn_2(feature_vector, label);
+string Multiperceptron::train(vector<string> feature_vector, string label) {
+    string pred = this->learn_2(feature_vector, label);
+    return pred;
+//    for (string p: classnames){
+//        Perceptron cur_p = perceptrons[p];
+//        for (auto it: cur_p.weightVector){
+//            cout << " " << it.first << ":" << it.second << endl;
+//        }
+//    }
+//    cout << "++++++++++++++++++++++++++++++" << endl;
 }
 
-void Multiperceptron::learn_2(vector<string> feature_vector, string label) {
+string Multiperceptron::learn_2(vector<string> feature_vector, string label) {
     string best_label = this->best_perceptron(feature_vector);
-    cout << best_label << label << endl;
+//    cout << best_label << label << endl;
 
     if (best_label != label){
-        cout << "update" << endl;
+//        cout << "not equal" << "update" << endl;
         perceptrons[best_label].subtract(feature_vector);
         perceptrons[label].add(feature_vector);
     }
+
+    return best_label;
+
 }
 
 string Multiperceptron::best_perceptron(vector<string> feature_vector) {
@@ -63,6 +74,7 @@ string Multiperceptron::best_perceptron(vector<string> feature_vector) {
                 }
             }
     }
+
 
     return best_label;
 

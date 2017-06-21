@@ -16,8 +16,8 @@ public:
     unordered_map<string,Perceptron> perceptrons;
 
     Multiperceptron(vector<string> classnames);
-    void train(vector<string> feature_vector, string label);
-    void learn_2(vector<string> feature_vector, string label);
+    string train(vector<string> feature_vector, string label);
+    string learn_2(vector<string> feature_vector, string label);
     string best_perceptron(vector<string> feature_vector);
 
 private:

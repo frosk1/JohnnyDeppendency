@@ -16,9 +16,11 @@ int main() {
     vector<vector<string>> sen_tokens;
     string type = "standard";
     vector<string> classnames {"shift","RA","LA"};
+    Multiperceptron multiperceptron(classnames);
+    int correct = 0;
     if (myfile.is_open())
     {
-        while ( getline (myfile,line)  && f < 700 )
+        while ( getline (myfile,line))
         {
             if (line!= ""){
 
@@ -32,14 +34,12 @@ int main() {
 //              conf =  [[t0] [t1,t2,t3,t4,t5]]
                 vector<vector<Token>> configuration = init_conf(tokens);
                 vector<tuple<Token,Token>> arc_set;
-                Multiperceptron multiperceptron(classnames);
 
 //                  while buffer is not emtpy
                     while (configuration[1].size() > 0){
 
                         if (oracle_bool){
 
-//                          action, arc_set = Oracle(conf)
                             tuple<string,vector<tuple<Token,Token>>> oracle_result = oracle(configuration,
                                                                                         arc_set, type);
 
@@ -48,27 +48,23 @@ int main() {
                             arc_set = get<1>(oracle_result);
 
                             vector<string> featue_vector = feature_extraction(configuration, arc_set);
-
-
-
-                            multiperceptron.train(featue_vector,action);
-
-                            cout << "STACK:" << endl;
-                            for (Token t: configuration[0]){
-                                cout << t.word << " ";
+                            string pred = multiperceptron.train(featue_vector,action);
+                            if (pred == action){
+                                correct++;
                             }
-                            cout << "\nBuffer:" << endl;
-                            for (Token t: configuration[1]){
-                                cout << t.word << " ";
-                            }
-                            cout << endl<< "+++++++"+action +"+++++++" << endl;
+//                            cout << correct << endl;
 
-//                          feat_vec = make_feat_vec(conf)
-//                          # X, y
-//                          train_perc(feat_vec, action)
-//                          conf = parser(action)
+//                            cout << "STACK:" << endl;
+//                            for (Token t: configuration[0]){
+//                                cout << t.word << " ";
+//                            }
+//                            cout << "\nBuffer:" << endl;
+//                            for (Token t: configuration[1]){
+//                                cout << t.word << " ";
+//                            }
+//                            cout << endl<< "+++++++"+action +"+++++++" << endl;
+
                             configuration = parser(configuration, action, type);
-                            int s = 0;
 
                         }
 
@@ -85,12 +81,18 @@ int main() {
                 c = 1;
 
             }
+
+            cout << "finished sen: " << f << endl;
             f ++;
         }
         myfile.close();
     }
 
     else cout << "Unable to open file";
+
+
+
+
 
     return 0;
 }
