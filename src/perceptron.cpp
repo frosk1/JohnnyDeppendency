@@ -20,16 +20,14 @@ void Perceptron::initialize(string feature) {
 void Perceptron::add(vector<string> feature_vector) {
    for (string feature: feature_vector){
        double value = weightVector[feature];
-       value = value +1;
-       weightVector[feature] = value;
+       weightVector[feature] = value +1;
    }
 }
 
 void Perceptron::subtract(vector<string> feature_vector){
    for (string feature: feature_vector){
        double value = weightVector[feature];
-       value = value -1;
-       weightVector[feature] = value;
+       weightVector[feature] = value-1;
    }
 }
 

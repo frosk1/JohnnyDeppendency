@@ -11,6 +11,7 @@ int main() {
     bool oracle_bool = true;
     int c = 0;
     int f = 0;
+    int sen_c = 0;
     bool not_sent_end = true;
     ifstream myfile ("../resource/wsj_dev.conll06.gold");
     vector<vector<string>> sen_tokens;
@@ -49,9 +50,9 @@ int main() {
 
                             vector<string> featue_vector = feature_extraction(configuration, arc_set);
                             string pred = multiperceptron.train(featue_vector,action);
-                            if (pred == action){
-                                correct++;
-                            }
+//                            if (pred == action){
+//                                correct++;
+//                            }
 //                            cout << correct << endl;
 
 //                            cout << "STACK:" << endl;
@@ -74,15 +75,17 @@ int main() {
 
 
                         }
+
                     }
 
 
                 sen_tokens.clear();
+                cout << "finished sentence: " << sen_c << endl;
+                sen_c++;
                 c = 1;
 
             }
 
-            cout << "finished sen: " << f << endl;
             f ++;
         }
         myfile.close();
