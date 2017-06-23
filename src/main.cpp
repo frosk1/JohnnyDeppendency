@@ -4,6 +4,7 @@
 #include "oracle.h"
 #include "Multiperceptron.h"
 #include "feature_ex.h"
+#include <unordered_map>
 
 int main() {
 
@@ -18,6 +19,8 @@ int main() {
     string type = "standard";
     vector<string> classnames {"shift","RA","LA"};
     Multiperceptron multiperceptron(classnames);
+    unordered_map<std::string,int> feature_map;
+
     int correct = 0;
     if (myfile.is_open())
     {
@@ -48,8 +51,11 @@ int main() {
                             action = get<0>(oracle_result);
                             arc_set = get<1>(oracle_result);
 
-                            vector<string> featue_vector = feature_extraction(configuration, arc_set);
-                            string pred = multiperceptron.train(featue_vector,action);
+                            vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
+                            vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
+
+                            string pred = multiperceptron.train(feature_vector,action);
+                            cout << action << ":::" << pred << endl;
 //                            if (pred == action){
 //                                correct++;
 //                            }

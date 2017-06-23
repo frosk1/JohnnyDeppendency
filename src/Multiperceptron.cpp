@@ -30,12 +30,12 @@ void Multiperceptron::initperceptron() {
    }
 }
 
-string Multiperceptron::train(vector<string> feature_vector, string label) {
+string Multiperceptron::train(vector<int> feature_vector, string label) {
     string pred = this->learn_2(feature_vector, label);
     return pred;
 }
 
-string Multiperceptron::learn_2(vector<string> feature_vector, string gold_label) {
+string Multiperceptron::learn_2(vector<int> feature_vector, string gold_label) {
     string best_label = this->best_perceptron(feature_vector);
 
     if (best_label != gold_label){
@@ -47,7 +47,7 @@ string Multiperceptron::learn_2(vector<string> feature_vector, string gold_label
 
 }
 
-string Multiperceptron::best_perceptron(vector<string> feature_vector) {
+string Multiperceptron::best_perceptron(vector<int> feature_vector) {
     string any_perceptron = classnames[0];
 
     double best_score = perceptrons[any_perceptron].score(feature_vector);

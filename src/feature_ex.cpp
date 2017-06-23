@@ -30,3 +30,26 @@ vector<string> feature_extraction(vector<vector<Token>> conf, vector<tuple<Token
 
     return feature_vector;
 }
+
+vector<int> feature_to_index(vector<string> feature_vector, unordered_map<string, int> feature_map){
+    vector<int> int_feature_vec;
+    for(string feature: feature_vector) {
+
+        if (!feature_map.count(feature)){
+            init_feature_index(feature, feature_map);
+            int_feature_vec.push_back(feature_map[feature]);
+        }
+        else {
+            int_feature_vec.push_back(feature_map[feature]);
+        }
+    }
+
+    return int_feature_vec;
+}
+
+
+void init_feature_index(string feature, unordered_map<string, int> feature_map){
+    int cur_max_index = feature_map.size();
+    feature_map.insert({feature,cur_max_index+1});
+}
+
