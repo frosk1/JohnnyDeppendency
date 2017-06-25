@@ -18,13 +18,14 @@ int main() {
     int f = 0;
     int sen_c = 0;
     bool not_sent_end = true;
-//    ifstream myfile ("../resource/wsj_dev.conll06.gold");
-    ifstream myfile ("/home/frosk/english/train/wsj_train.first-1k.conll06");
+    ifstream myfile ("../wsj_train.first-1k.conll06");
     vector<vector<string>> sen_tokens;
     string type = "standard";
     vector<string> classnames {"shift","RA","LA"};
     Multiperceptron multiperceptron(classnames);
     unordered_map<std::string,int> feature_map;
+
+
     int max_iter = 1;
 
     for (int i = 0; i < max_iter; ++i) {
@@ -38,7 +39,8 @@ int main() {
                     c++;
                     vector<string> tokens = tokenizer(line, '\t');
                     sen_tokens.push_back(tokens);
-                } else {
+                }
+                else {
                     vector<Token> tokens = make_token(sen_tokens);
 //              conf =  [[t0] [t1,t2,t3,t4,t5]]
                     vector<vector<Token>> configuration = init_conf(tokens);
