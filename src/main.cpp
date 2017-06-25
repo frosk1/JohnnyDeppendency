@@ -18,7 +18,7 @@ int main() {
     int f = 0;
     int sen_c = 0;
     bool not_sent_end = true;
-    ifstream myfile ("../wsj_train.first-1k.conll06");
+    ifstream myfile ("../resource/wsj_train.first-1k.conll06");
     vector<vector<string>> sen_tokens;
     string type = "standard";
     vector<string> classnames {"shift","RA","LA"};
@@ -58,10 +58,10 @@ int main() {
                             action = get<0>(oracle_result);
                             arc_set = get<1>(oracle_result);
 
-                            vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
-                            vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
-
-                            string pred = multiperceptron.train(feature_vector, action);
+//                            vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
+//                            vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
+//
+//                            string pred = multiperceptron.train(feature_vector, action);
 //                            cout << action << ":::" << pred << endl;
 //                            if (pred == action){
 //                                correct++;
