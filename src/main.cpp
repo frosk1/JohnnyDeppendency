@@ -18,7 +18,8 @@ int main() {
     int f = 0;
     int sen_c = 0;
     bool not_sent_end = true;
-    ifstream myfile ("../resource/wsj_dev.conll06.gold");
+//    ifstream myfile ("../resource/wsj_dev.conll06.gold");
+    ifstream myfile ("/home/frosk/english/train/wsj_train.first-1k.conll06");
     vector<vector<string>> sen_tokens;
     string type = "standard";
     vector<string> classnames {"shift","RA","LA"};
