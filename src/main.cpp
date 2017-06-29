@@ -33,7 +33,7 @@ int main() {
 
         int correct = 0;
         if (myfile.is_open()) {
-            while (getline(myfile, line)) {
+            while (getline(myfile, line) && f<50) {
                 if (line != "") {
 
                     c++;
@@ -51,18 +51,22 @@ int main() {
 
                         if (oracle_bool) {
 
-                            tuple<string, vector<tuple<Token, Token>>> oracle_result = oracle(configuration,
-                                                                                              arc_set, type);
-
-                            string action;
-                            action = get<0>(oracle_result);
-                            arc_set = get<1>(oracle_result);
-
-                            vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
-                            vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
-                            string pred = multiperceptron.train(feature_vector, action);
+                            string action = oracle(configuration, arc_set, type);
+//                            vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
+//                            vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
+//                            string pred = multiperceptron.train(feature_vector, action);
 
 //                            cout << "gold: " << action << " pred: " << pred << endl;
+
+                            cout << "STACK" << endl;
+                            for (Token t : configuration[0]) cout << t.word << " ";
+                            cout << endl;
+                            cout << "Buffer" << endl;
+                            for (Token t : configuration[1]) cout << t.word << " ";
+                            cout << endl;
+
+                            cout << "ACTION " << action << endl;
+
 
                             configuration = parser(configuration, action, type);
 
