@@ -62,21 +62,7 @@ int main() {
                             vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
                             string pred = multiperceptron.train(feature_vector, action);
 
-//                            cout << action << ":::" << pred << endl;
-//                            if (pred == action){
-//                                correct++;
-//                            }
-//                            cout << correct << endl;
-
-//                            cout << "STACK:" << endl;
-//                            for (Token t: configuration[0]){
-//                                cout << t.word << " ";
-//                            }
-//                            cout << "\nBuffer:" << endl;
-//                            for (Token t: configuration[1]){
-//                                cout << t.word << " ";
-//                            }
-//                            cout << endl<< "+++++++"+action +"+++++++" << endl;
+//                            cout << "gold: " << action << " pred: " << pred << endl;
 
                             configuration = parser(configuration, action, type);
 
