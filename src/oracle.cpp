@@ -150,7 +150,6 @@ vector<vector<Token>> parser(
     vector<Token> stack = configuration[0];
     vector<Token> buffer = configuration[1];
 
-    int dummy;
 
 
    if (type == "standard") {
