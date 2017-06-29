@@ -10,8 +10,9 @@ using namespace std;
 #define JOHNNYDEPPENDENCY_ORACLE_H
 
 string oracle(vector<vector<Token>> configuration,
-              vector<tuple<Token,Token>>& arc_set ,
+              vector<pair<Token,Token>>& arc_set ,
               string type);
+
 vector<vector<Token>> parser(vector<vector<Token>> configuration,
                              string action,
                              string type);

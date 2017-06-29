@@ -17,7 +17,6 @@ int main() {
     int c = 0;
     int f = 0;
     int sen_c = 0;
-    bool not_sent_end = true;
     ifstream myfile ("../resource/wsj_train.first-1k.conll06");
     vector<vector<string>> sen_tokens;
     string type = "standard";
@@ -33,7 +32,7 @@ int main() {
 
         int correct = 0;
         if (myfile.is_open()) {
-            while (getline(myfile, line) && f<50) {
+            while (getline(myfile, line)) {
                 if (line != "") {
 
                     c++;
@@ -42,9 +41,9 @@ int main() {
                 }
                 else {
                     vector<Token> tokens = make_token(sen_tokens);
-//              conf =  [[t0] [t1,t2,t3,t4,t5]]
                     vector<vector<Token>> configuration = init_conf(tokens);
-                    vector<tuple<Token, Token>> arc_set;
+                    vector<pair<Token, Token>> arc_set;
+
 
 //                  while buffer is not emtpy
                     while (configuration[1].size() > 0) {
@@ -52,21 +51,12 @@ int main() {
                         if (oracle_bool) {
 
                             string action = oracle(configuration, arc_set, type);
-//                            vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
-//                            vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
-//                            string pred = multiperceptron.train(feature_vector, action);
+                            vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
+                            vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
+                            string pred = multiperceptron.train(feature_vector, action);
 
 //                            cout << "gold: " << action << " pred: " << pred << endl;
-
-                            cout << "STACK" << endl;
-                            for (Token t : configuration[0]) cout << t.word << " ";
-                            cout << endl;
-                            cout << "Buffer" << endl;
-                            for (Token t : configuration[1]) cout << t.word << " ";
-                            cout << endl;
-
-                            cout << "ACTION " << action << endl;
-
+//                            print_parse(configuration,action);
 
                             configuration = parser(configuration, action, type);
 

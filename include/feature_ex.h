@@ -11,7 +11,7 @@
 #define JOHNNYDEPPENDENCY_FEATURE_EX_H
 
 
-vector<string> feature_extraction(vector<vector<Token>> conf, vector<tuple<Token,Token>> arc_set);
+vector<string> feature_extraction(vector<vector<Token>> conf, vector<pair<Token,Token>> arc_set);
 
 vector<int> feature_to_index(vector<string> feature_vector, unordered_map<string, int>& feature_map);
 
