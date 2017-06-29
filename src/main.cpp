@@ -17,7 +17,6 @@ int main() {
     int c = 0;
     int f = 0;
     int sen_c = 0;
-    bool not_sent_end = true;
     ifstream myfile ("../resource/wsj_train.first-1k.conll06");
     vector<vector<string>> sen_tokens;
     string type = "standard";
@@ -42,27 +41,22 @@ int main() {
                 }
                 else {
                     vector<Token> tokens = make_token(sen_tokens);
-//              conf =  [[t0] [t1,t2,t3,t4,t5]]
                     vector<vector<Token>> configuration = init_conf(tokens);
-                    vector<tuple<Token, Token>> arc_set;
+                    vector<pair<Token, Token>> arc_set;
+
 
 //                  while buffer is not emtpy
                     while (configuration[1].size() > 0) {
 
                         if (oracle_bool) {
 
-                            tuple<string, vector<tuple<Token, Token>>> oracle_result = oracle(configuration,
-                                                                                              arc_set, type);
-
-                            string action;
-                            action = get<0>(oracle_result);
-                            arc_set = get<1>(oracle_result);
-
+                            string action = oracle(configuration, arc_set, type);
                             vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
                             vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
                             string pred = multiperceptron.train(feature_vector, action);
 
 //                            cout << "gold: " << action << " pred: " << pred << endl;
+//                            print_parse(configuration,action);
 
                             configuration = parser(configuration, action, type);
 

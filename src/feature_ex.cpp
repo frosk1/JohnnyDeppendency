@@ -9,7 +9,7 @@
 #include "utils.h"
 #include <tuple>
 
-vector<string> feature_extraction(vector<vector<Token>> conf, vector<tuple<Token,Token>> arc_set){
+vector<string> feature_extraction(vector<vector<Token>> conf, vector<pair<Token,Token>> arc_set){
     vector<Token> buffer = conf[1];
     vector<Token> stack = conf[0];
 
@@ -23,9 +23,9 @@ vector<string> feature_extraction(vector<vector<Token>> conf, vector<tuple<Token
         feature_vector.push_back("b" + to_string(token.index) + token.pos);
     }
 
-    for ( tuple<Token,Token> arc : arc_set){
-        feature_vector.push_back(get<0>(arc).word + get<1>(arc).type + get<1>(arc).word);
-        feature_vector.push_back(get<0>(arc).pos + get<1>(arc).type  + get<1>(arc).pos);
+    for ( pair<Token,Token> arc : arc_set){
+        feature_vector.push_back(arc.first.word + arc.second.type + get<1>(arc).word);
+        feature_vector.push_back(arc.first.pos + arc.second.type  + get<1>(arc).pos);
     }
 
     return feature_vector;

@@ -31,10 +31,10 @@ bool hasallchildren(int cur_token_ind, vector<Token> buffer, string type){
 }
 
 
-bool hashead(int stack_top_ind, vector<tuple<Token,Token>> arc_set){
-    for (tuple<Token,Token> arc : arc_set){
-        cout << get<0>(arc).word << "::" << get<1>(arc).word << endl;
-       if (stack_top_ind == get<1>(arc).index){
+bool hashead(int stack_top_ind, vector<pair<Token,Token>> arc_set){
+    for (pair<Token,Token> arc : arc_set){
+//        cout << arc.first.word << "::" << arc.second.word << endl;
+       if (stack_top_ind == arc.second.index){
           return true;
        }
     }
@@ -52,17 +52,16 @@ bool stackisnotroot(Token top_stack){
 
 }
 
-tuple<string,vector<tuple<Token,Token>>> standard_action(
+string standard_action(
         vector<vector<Token>> configuration,
-        vector<tuple<Token,Token>> arc_set,
+        vector<pair<Token,Token>>& arc_set,
         string type)
 {
 
     vector<Token> stack = configuration[0];
 
     if (stack.size() == 0){
-        tuple<string, vector<tuple<Token,Token>>> action ("shift", arc_set);
-        return action;
+        return "shift";
     }
 
     vector<Token> buffer = configuration[1];
@@ -75,25 +74,22 @@ tuple<string,vector<tuple<Token,Token>>> standard_action(
 
 
     if (stack_top_head == buffer_front_ind && stackisnotroot(stack_top)) {
-        arc_set.push_back( tuple<Token,Token> (buffer_front, stack_top));
+        arc_set.push_back( pair<Token,Token> (buffer_front, stack_top));
+        return "LA";
 
-        tuple<string, vector<tuple<Token,Token>>> action ("LA", arc_set);
-        return action;
     } else if (buffer_front_head == stack_top_ind &&  hasallchildren(buffer_front_ind, buffer, type)) {
-        arc_set.push_back( tuple<Token,Token> (stack_top, buffer_front));
+        arc_set.push_back( pair<Token,Token> (stack_top, buffer_front));
+        return "RA";
 
-        tuple<string, vector<tuple<Token,Token>>> action ("RA", arc_set);
-        return action;
     } else {
 
-        tuple<string, vector<tuple<Token,Token>>> action ("shift", arc_set);
-        return action;
+        return "shift";
     }
 }
 
-tuple<string,vector<tuple<Token,Token>>> eager_action(
+string eager_action(
         vector<vector<Token>> configuration,
-        vector<tuple<Token,Token>> arc_set,
+        vector<pair<Token,Token>>& arc_set,
         string type)
 {
 
@@ -108,31 +104,27 @@ tuple<string,vector<tuple<Token,Token>>> eager_action(
 
 
     if (stack_top_head == buffer_front_ind && stackisnotroot(stack_top)) {
-        arc_set.push_back( tuple<Token,Token> (buffer_front, stack_top));
+        arc_set.push_back( pair<Token,Token> (buffer_front, stack_top));
 
-        tuple<string, vector<tuple<Token,Token>>> action ("LA", arc_set);
-        return action;
+        return "LA";
     }
     else if (buffer_front_head == stack_top_ind) {
-        arc_set.push_back( tuple<Token,Token> (stack_top, buffer_front));
+        arc_set.push_back( pair<Token,Token> (stack_top, buffer_front));
 
-        tuple<string, vector<tuple<Token,Token>>> action ("RA", arc_set);
-        return action;
+        return "RA";
     }
     else if( hashead(stack_top_ind, arc_set) && hasallchildren(stack_top_ind, buffer, type)){
-            tuple<string, vector<tuple<Token,Token>>> action ("reduce", arc_set);
-            return action;
+            return "reduce";
         }
     else {
-        tuple<string, vector<tuple<Token,Token>>> action ("shift", arc_set);
-        return action;
+        return "shift";
     }
 }
 
 
-tuple<string,vector<tuple<Token,Token>>> oracle(vector<vector<Token>> configuration,
-                                            vector<tuple<Token,Token>> arc_set ,
-                                            string type){
+string oracle(vector<vector<Token>> configuration,
+              vector<pair<Token,Token>>& arc_set ,
+              string type){
 
     if (type == "standard") {
         return standard_action(configuration, arc_set, type);
