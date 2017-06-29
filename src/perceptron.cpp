@@ -7,6 +7,10 @@
 
 Perceptron::Perceptron(string inlabel) {
     label = inlabel;
+    for (int i = 0; i < 50000; ++i) {
+        weightVector.push_back(0);
+
+    }
 }
 
 Perceptron::Perceptron(){
@@ -14,7 +18,7 @@ Perceptron::Perceptron(){
 
 
 void Perceptron::initialize(int feature) {
-    weightVector.emplace(feature, 0);
+//    weightVector.emplace(feature, 0);
 }
 
 void Perceptron::add(vector<int> feature_vector) {
@@ -34,7 +38,7 @@ void Perceptron::subtract(vector<int> feature_vector){
 }
 
 double Perceptron::score(vector<int> feature_vector) {
-     int sum = 0.0;
+     int sum = 0;
 //    double sum;
 
 //    for (int feature: feature_vector){
@@ -47,7 +51,16 @@ double Perceptron::score(vector<int> feature_vector) {
 //        }
 //    }
     for (int feature: feature_vector){
-        sum += weightVector[feature];
+        if (feature > weightVector.size()){
+            cout << feature << "fjaölsfjödlaskfjk" << endl;
+            int dif = feature-weightVector.size();
+            for (int i = 0; i < dif; ++i) {
+                weightVector.push_back(0);
+            }
+        }
+        else {
+            sum += weightVector[feature];
+        }
     }
     return sum;
 }
