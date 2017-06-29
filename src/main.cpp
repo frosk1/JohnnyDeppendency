@@ -58,10 +58,10 @@ int main() {
                             action = get<0>(oracle_result);
                             arc_set = get<1>(oracle_result);
 
-//                            vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
-//                            vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
-//
-//                            string pred = multiperceptron.train(feature_vector, action);
+                            vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
+                            vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
+                            string pred = multiperceptron.train(feature_vector, action);
+
 //                            cout << action << ":::" << pred << endl;
 //                            if (pred == action){
 //                                correct++;
@@ -90,7 +90,7 @@ int main() {
 
 
                     sen_tokens.clear();
-//                    cout << "finished sentence: " << sen_c << endl;
+                    cout << "finished sentence: " << sen_c << endl;
                     sen_c++;
                     c = 1;
 

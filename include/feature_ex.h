@@ -12,7 +12,7 @@
 
 
 vector<string> feature_extraction(vector<vector<Token>> conf, vector<tuple<Token,Token>> arc_set);
-vector<int> feature_to_index(vector<string> feature_vector, unordered_map<string, int> feature_map);
-void init_feature_index(string feature, unordered_map<string, int> feature_map);
+
+vector<int> feature_to_index(vector<string> feature_vector, unordered_map<string, int>& feature_map);
 
 #endif //JOHNNYDEPPENDENCY_FEATURE_EX_H

@@ -17,7 +17,6 @@ public:
 
     Multiperceptron(vector<string> classnames);
     string train(vector<int> feature_vector, string label);
-    string learn_2(vector<int> feature_vector, string label);
     string best_perceptron(vector<int> feature_vector);
 
 private:

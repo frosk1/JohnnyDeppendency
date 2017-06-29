@@ -2,6 +2,7 @@
 // Created by frosk on 13.06.17.
 //
 #include <unordered_map>
+#include <map>
 #include <vector>
 using namespace std;
 #ifndef JOHNNYDEPPENDENCY_PERCEPTRON_H
@@ -10,7 +11,7 @@ using namespace std;
 
 class Perceptron {
 public:
-    unordered_map<int, double> weightVector;
+    map<int, int> weightVector;
     string label;
     Perceptron(string label);
     Perceptron();
