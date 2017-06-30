@@ -53,7 +53,7 @@ void print_parse(vector<vector<Token>> configuration, string action){
     cout << "ACTION " << action << endl;
 }
 
-int train(vector<vector<string>> sen_tokens,
+int train_perceptron(vector<vector<string>> sen_tokens,
             Multiperceptron& multiperceptron,
             string type,
             unordered_map<string,int>& feature_map){
@@ -81,7 +81,7 @@ int train(vector<vector<string>> sen_tokens,
     return corr;
 }
 
-vector<pair<Token, Token>> predict(vector<vector<string>> sen_tokens,
+vector<pair<Token, Token>> parse_perceptron(vector<vector<string>> sen_tokens,
             Multiperceptron& multiperceptron,
             string type,
             unordered_map<string,int>& feature_map){
@@ -105,3 +105,24 @@ vector<pair<Token, Token>> predict(vector<vector<string>> sen_tokens,
     return arc_set;
 }
 
+vector<pair<Token, Token>> parse_oracle(vector<vector<string>> sen_tokens,
+                                        string type){
+
+    vector<Token> tokens = make_token(sen_tokens);
+    vector<vector<Token>> configuration = init_conf(tokens);
+    vector<pair<Token, Token>> arc_set;
+    int corr = 0;
+    int overall =0;
+
+//     while buffer is not emtpy
+   while (configuration[1].size() > 0) {
+
+        vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
+        vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
+
+        string action = oracle(configuration, arc_set, type);
+        configuration = parser(configuration, action, type);
+    }
+
+    return arc_set;
+}

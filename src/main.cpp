@@ -23,7 +23,8 @@ int main() {
     vector<string> classnames {"shift","RA","LA"};
     Multiperceptron multiperceptron(classnames);
     unordered_map<std::string,int> feature_map;
-    vector<pair<Token,Token>> parse_tree;
+    vector<pair<Token,Token>> pred_parse_tree;
+    vector<pair<Token,Token>> gold_parse_tree;
     int corr = 0;
     int overall = 0;
 
@@ -43,8 +44,10 @@ int main() {
                 }
                 else {
 
-                    corr += train(sen_tokens, multiperceptron, type, feature_map);
-//                    parse_tree = predict(sen_tokens, multiperceptron, type, feature_map);
+                    corr += train_perceptron(sen_tokens, multiperceptron, type, feature_map);
+                    pred_parse_tree = parse_perceptron(sen_tokens, multiperceptron, type, feature_map);
+                    gold_parse_tree = parse_oracle(sen_tokens, type);
+
                     sen_tokens.clear();
 
 //                    cout << "finished sentence: " << sen_c << endl;

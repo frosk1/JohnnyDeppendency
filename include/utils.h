@@ -17,15 +17,18 @@ vector<vector<Token>> init_conf(vector<Token> tokens);
 
 void print_parse(vector<vector<Token>> configuration, string action);
 
-int train(vector<vector<string>> sen_tokens,
+int train_perceptron(vector<vector<string>> sen_tokens,
            Multiperceptron& multiperceptron,
            string type,
            unordered_map<string,int>& feature_map);
 
-vector<pair<Token, Token>> predict(vector<vector<string>> sen_tokens,
+vector<pair<Token, Token>> parse_perceptron(vector<vector<string>> sen_tokens,
                                    Multiperceptron& multiperceptron,
                                    string type,
                                    unordered_map<string,int>& feature_map);
+
+vector<pair<Token, Token>> parse_oracle(vector<vector<string>> sen_tokens,
+                                        string type;
 
 
 #endif //JOHNNYDEPPENDENCY_UTILS_H
