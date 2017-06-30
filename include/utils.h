@@ -3,6 +3,9 @@
 //
 #include <vector>
 #include <token.h>
+#include "oracle.h"
+#include "Multiperceptron.h"
+#include "feature_ex.h"
 using namespace std;
 
 #ifndef JOHNNYDEPPENDENCY_UTILS_H
@@ -11,6 +14,18 @@ using namespace std;
 vector<string> tokenizer(string sent, char delimiter);
 vector<Token> make_token(vector<vector<string>> sen_tokens);
 vector<vector<Token>> init_conf(vector<Token> tokens);
+
 void print_parse(vector<vector<Token>> configuration, string action);
+
+int train(vector<vector<string>> sen_tokens,
+           Multiperceptron& multiperceptron,
+           string type,
+           unordered_map<string,int>& feature_map);
+
+vector<pair<Token, Token>> predict(vector<vector<string>> sen_tokens,
+                                   Multiperceptron& multiperceptron,
+                                   string type,
+                                   unordered_map<string,int>& feature_map);
+
 
 #endif //JOHNNYDEPPENDENCY_UTILS_H

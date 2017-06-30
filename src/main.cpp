@@ -23,6 +23,7 @@ int main() {
     vector<string> classnames {"shift","RA","LA"};
     Multiperceptron multiperceptron(classnames);
     unordered_map<std::string,int> feature_map;
+    vector<pair<Token,Token>> parse_tree;
     int corr = 0;
     int overall = 0;
 
@@ -36,44 +37,16 @@ int main() {
         if (myfile.is_open()) {
             while (getline(myfile, line)) {
                 if (line != "") {
-
                     c++;
                     vector<string> tokens = tokenizer(line, '\t');
                     sen_tokens.push_back(tokens);
                 }
                 else {
-                    vector<Token> tokens = make_token(sen_tokens);
-                    vector<vector<Token>> configuration = init_conf(tokens);
-                    vector<pair<Token, Token>> arc_set;
 
-
-//                  while buffer is not emtpy
-                    while (configuration[1].size() > 0) {
-
-                        if (oracle_bool) {
-
-                            string action = oracle(configuration, arc_set, type);
-                            vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
-                            vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
-                            string pred = multiperceptron.train(feature_vector, action);
-
-//                            cout << "gold: " << action << " pred: " << pred << endl;
-                            if (action == pred){ corr ++;}
-                            overall++;
-//                            print_parse(configuration,action);
-
-                            configuration = parser(configuration, action, type);
-
-                        } else {
-                            cout << "using perceptrion";
-
-
-                        }
-
-                    }
-
-
+                    corr += train(sen_tokens, multiperceptron, type, feature_map);
+//                    parse_tree = predict(sen_tokens, multiperceptron, type, feature_map);
                     sen_tokens.clear();
+
 //                    cout << "finished sentence: " << sen_c << endl;
                     sen_c++;
                     c = 1;
