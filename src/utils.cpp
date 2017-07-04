@@ -1,5 +1,6 @@
 #include <string>
 #include "utils.h"
+#include <fstream>
 
 
 vector<string> tokenizer(string sent, char delimiter) {
@@ -53,7 +54,7 @@ void print_parse(vector<vector<Token>> configuration, string action){
     cout << "ACTION " << action << endl;
 }
 
-int train_perceptron(vector<vector<string>> sen_tokens,
+pair<int,int> train_perceptron(vector<vector<string>> sen_tokens,
             Multiperceptron& multiperceptron,
             string type,
             unordered_map<string,int>& feature_map){
@@ -78,10 +79,10 @@ int train_perceptron(vector<vector<string>> sen_tokens,
         if (action == pred){ corr ++;}
         overall++;
     }
-    return corr;
+    return make_pair(corr,overall);
 }
 
-vector<pair<Token, Token>> parse_perceptron(vector<vector<string>> sen_tokens,
+pair<int, int> parse_dev(vector<vector<string>> sen_tokens,
             Multiperceptron& multiperceptron,
             string type,
             unordered_map<string,int>& feature_map){
@@ -90,7 +91,7 @@ vector<pair<Token, Token>> parse_perceptron(vector<vector<string>> sen_tokens,
     vector<vector<Token>> configuration = init_conf(tokens);
     vector<pair<Token, Token>> arc_set;
     int corr = 0;
-    int overall =0;
+    int all = 0;
 
 //     while buffer is not emtpy
    while (configuration[1].size() > 0) {
@@ -98,31 +99,43 @@ vector<pair<Token, Token>> parse_perceptron(vector<vector<string>> sen_tokens,
         vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
         vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
 
-        string action = multiperceptron.best_perceptron(feature_vector);
+        string pred = multiperceptron.best_perceptron(feature_vector);
+        string action = oracle(configuration, arc_set, type);
+       if (pred==action) {corr++;}
+       all++;
         configuration = parser(configuration, action, type);
     }
 
-    return arc_set;
+    return make_pair(corr,all);
 }
 
-vector<pair<Token, Token>> parse_oracle(vector<vector<string>> sen_tokens,
-                                        string type){
+void dev_performance(string file_name,
+                      Multiperceptron multiperceptron,
+                      unordered_map<string, int> feature_map,
+                      string type) {
 
-    vector<Token> tokens = make_token(sen_tokens);
-    vector<vector<Token>> configuration = init_conf(tokens);
-    vector<pair<Token, Token>> arc_set;
     int corr = 0;
-    int overall =0;
+    int overall = 0;
+    vector<vector<string>> sen_tokens_dev;
 
-//     while buffer is not emtpy
-   while (configuration[1].size() > 0) {
-
-        vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
-        vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
-
-        string action = oracle(configuration, arc_set, type);
-        configuration = parser(configuration, action, type);
+    string line2;
+    ifstream devfile("../resource/wsj_dev.conll06.gold");
+    if (devfile.is_open()) {
+        while (getline(devfile, line2)) {
+            if (line2 != "") {
+                vector<string> tokens = tokenizer(line2, '\t');
+                sen_tokens_dev.push_back(tokens);
+            } else {
+                pair<int, int> result = parse_dev(sen_tokens_dev, multiperceptron, type, feature_map);
+                corr += result.first;
+                overall += result.second;
+//                        cout << "corr: " << corr << "overall: " << overall << endl;
+                sen_tokens_dev.clear();
+            }
+        }
+    } else {
+        cout << "Unable to open dev file";
     }
 
-    return arc_set;
+    cout << "ACC: " << (float) corr / (float) overall << endl;
 }

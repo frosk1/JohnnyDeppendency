@@ -13,12 +13,11 @@ int main() {
 
 
     string line;
-    bool oracle_bool = true;
     int c = 0;
     int f = 0;
     int sen_c = 0;
-//    ifstream myfile ("../resource/wsj_train.first-1k.conll06");
     vector<vector<string>> sen_tokens;
+    vector<vector<string>> sen_tokens_dev;
     string type = "standard";
     vector<string> classnames {"shift","RA","LA"};
     Multiperceptron multiperceptron(classnames);
@@ -29,9 +28,11 @@ int main() {
     int overall = 0;
 
 
-    int max_iter = 10;
+    int max_iter = 1;
 
     for (int i = 0; i < max_iter; ++i) {
+        corr = 0;
+        overall = 0;
         cout << "...Epoch-" << i << "..." << endl;
 
         ifstream myfile ("../resource/wsj_train.first-1k.conll06");
@@ -43,13 +44,13 @@ int main() {
                     sen_tokens.push_back(tokens);
                 }
                 else {
-
-                    corr += train_perceptron(sen_tokens, multiperceptron, type, feature_map);
-                    pred_parse_tree = parse_perceptron(sen_tokens, multiperceptron, type, feature_map);
-                    gold_parse_tree = parse_oracle(sen_tokens, type);
+                    pair<int,int> result = train_perceptron(sen_tokens, multiperceptron, type, feature_map);
+                    corr += result.first;
+                    overall += result.second;
 
                     sen_tokens.clear();
 
+                    // sentence finished
 //                    cout << "finished sentence: " << sen_c << endl;
                     sen_c++;
                     c = 1;
@@ -60,16 +61,15 @@ int main() {
             }
 
             // EPOCH finished
-            cout << "correct: " << corr << "/" << overall <<endl;
-            corr = 0;
-            overall = 0;
+            cout << "train correct: " << corr  << "/" << overall << endl;
         }
         else {
-            cout << "Unable to open file";
+            cout << "Unable to open train file";
         }
 
         myfile.close();
     }
+    dev_performance("..resource/wsj_dev.conll06.gold", multiperceptron, feature_map, type) ;
 
 
 

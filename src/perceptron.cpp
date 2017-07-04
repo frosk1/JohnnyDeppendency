@@ -7,7 +7,7 @@
 
 Perceptron::Perceptron(string inlabel) {
     label = inlabel;
-    for (int i = 0; i < 50000; ++i) {
+    for (int i = 0; i < 70000; ++i) {
         weightVector.push_back(0);
 
     }
@@ -52,7 +52,6 @@ double Perceptron::score(vector<int> feature_vector) {
 //    }
     for (int feature: feature_vector){
         if (feature > weightVector.size()){
-            cout << feature << "fjaölsfjödlaskfjk" << endl;
             int dif = feature-weightVector.size();
             for (int i = 0; i < dif; ++i) {
                 weightVector.push_back(0);
