@@ -50,12 +50,11 @@ string Multiperceptron::best_perceptron(vector<int> feature_vector) {
     for (string percectron_name: classnames ) {
         if (percectron_name != any_perceptron){
 
-            Perceptron cur_perceptron = perceptrons[percectron_name];
-            int cur_score = cur_perceptron.score(feature_vector);
+            int cur_score = perceptrons[percectron_name].score(feature_vector);
 
             if (cur_score > best_score) {
                 best_score = cur_score;
-                best_label = cur_perceptron.label;
+                best_label = perceptrons[percectron_name].label;
                 }
             }
     }

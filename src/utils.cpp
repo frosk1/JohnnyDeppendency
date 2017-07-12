@@ -70,6 +70,7 @@ pair<int,int> train_perceptron(vector<vector<string>> sen_tokens,
 
         vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
         vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
+//        vector<int> feature_vector = feature_extraction_2(configuration, arc_set, feature_map);
 
         string action = oracle(configuration, arc_set, type);
         string pred = multiperceptron.train(feature_vector, action);
