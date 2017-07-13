@@ -70,7 +70,6 @@ pair<int,int> train_perceptron(vector<vector<string>> sen_tokens,
 
         vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
         vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
-//        vector<int> feature_vector = feature_extraction_2(configuration, arc_set, feature_map);
 
         string action = oracle(configuration, arc_set, type);
         string pred = multiperceptron.train(feature_vector, action);
@@ -121,20 +120,23 @@ void dev_performance(string file_name,
 
     string line2;
     ifstream devfile("../resource/wsj_dev.conll06.gold");
+
     if (devfile.is_open()) {
         while (getline(devfile, line2)) {
             if (line2 != "") {
                 vector<string> tokens = tokenizer(line2, '\t');
                 sen_tokens_dev.push_back(tokens);
-            } else {
+            }
+            else {
                 pair<int, int> result = parse_dev(sen_tokens_dev, multiperceptron, type, feature_map);
                 corr += result.first;
                 overall += result.second;
-//                        cout << "corr: " << corr << "overall: " << overall << endl;
+
                 sen_tokens_dev.clear();
             }
         }
-    } else {
+    }
+    else {
         cout << "Unable to open dev file";
     }
 

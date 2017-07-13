@@ -15,12 +15,9 @@ public:
     string label;
     Perceptron(string label);
     Perceptron();
-    void initialize(int feature);
     void add(vector<int> feature_vector);
     void subtract(vector<int> feature_vector);
     double score(vector<int> feature_vector);
-
-
 };
 
 

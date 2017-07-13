@@ -3,11 +3,9 @@
 //
 
 #include "perceptron.h"
-#include <iostream>
 
 Perceptron::Perceptron(string inlabel) {
     label = inlabel;
-//    weightVector.reserve(10000);
     weightVector.resize(1000);
 }
 
@@ -37,7 +35,5 @@ double Perceptron::score(vector<int> feature_vector) {
             sum += weightVector[feature];
         }
     }
-
-
     return sum;
 }

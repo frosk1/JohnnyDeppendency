@@ -4,19 +4,6 @@
 
 #include "Multiperceptron.h"
 #include <iostream>
-#include <unordered_map>
-//class Multiperceptron {
-//public:
-//    vector<string> classnames;
-//    unordered_map<string,Perceptron> perceptrons;
-//
-//    Multiperceptron(vector<string> classnames);
-//    void train(vector<string> feature_vector);
-//    void learn_2(vector<string> feature_vector);
-//
-//private:
-//    void initperceptron();
-//};
 
 Multiperceptron::Multiperceptron(vector<string> inclassnames) {
     classnames = inclassnames;
