@@ -1,5 +1,6 @@
 #include <string>
 #include "utils.h"
+#include <fstream>
 
 
 vector<string> tokenizer(string sent, char delimiter) {
@@ -53,5 +54,91 @@ void print_parse(vector<vector<Token>> configuration, string action){
     cout << "ACTION " << action << endl;
 }
 
+pair<int,int> train_perceptron(vector<vector<string>> sen_tokens,
+            Multiperceptron& multiperceptron,
+            string type,
+            unordered_map<string,int>& feature_map){
+
+    vector<Token> tokens = make_token(sen_tokens);
+    vector<vector<Token>> configuration = init_conf(tokens);
+    vector<pair<Token, Token>> arc_set;
+    int corr = 0;
+    int overall =0;
+
+//     while buffer is not emtpy
+   while (configuration[1].size() > 0) {
+
+        vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
+        vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
+
+        string action = oracle(configuration, arc_set, type);
+        string pred = multiperceptron.train(feature_vector, action);
 
 
+        configuration = parser(configuration, action, type);
+        if (action == pred){ corr ++;}
+        overall++;
+    }
+    return make_pair(corr,overall);
+}
+
+pair<int, int> parse_dev(vector<vector<string>> sen_tokens,
+            Multiperceptron& multiperceptron,
+            string type,
+            unordered_map<string,int>& feature_map){
+
+    vector<Token> tokens = make_token(sen_tokens);
+    vector<vector<Token>> configuration = init_conf(tokens);
+    vector<pair<Token, Token>> arc_set;
+    int corr = 0;
+    int all = 0;
+
+//     while buffer is not emtpy
+   while (configuration[1].size() > 0) {
+
+        vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
+        vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
+
+        string pred = multiperceptron.best_perceptron(feature_vector);
+        string action = oracle(configuration, arc_set, type);
+       if (pred==action) {corr++;}
+       all++;
+        configuration = parser(configuration, action, type);
+    }
+
+    return make_pair(corr,all);
+}
+
+void dev_performance(string file_name,
+                      Multiperceptron multiperceptron,
+                      unordered_map<string, int> feature_map,
+                      string type) {
+
+    int corr = 0;
+    int overall = 0;
+    vector<vector<string>> sen_tokens_dev;
+
+    string line2;
+    ifstream devfile("../resource/wsj_dev.conll06.gold");
+
+    if (devfile.is_open()) {
+        while (getline(devfile, line2)) {
+            if (line2 != "") {
+                vector<string> tokens = tokenizer(line2, '\t');
+                sen_tokens_dev.push_back(tokens);
+            }
+            else {
+                pair<int, int> result = parse_dev(sen_tokens_dev, multiperceptron, type, feature_map);
+                corr += result.first;
+                overall += result.second;
+
+                sen_tokens_dev.clear();
+            }
+        }
+    }
+    else {
+        cout << "Unable to open dev file";
+    }
+
+    cout << "ACC: " << (float) corr / (float) overall << endl;
+}

@@ -3,51 +3,37 @@
 //
 
 #include "perceptron.h"
-#include <iostream>
 
 Perceptron::Perceptron(string inlabel) {
     label = inlabel;
+    weightVector.resize(1000);
 }
 
 Perceptron::Perceptron(){
 }
 
 
-void Perceptron::initialize(int feature) {
-    weightVector.emplace(feature, 0);
-}
-
 void Perceptron::add(vector<int> feature_vector) {
    for (int feature: feature_vector){
-//       double value = weightVector[feature];
-//       weightVector[feature] = value +1;
        weightVector[feature]++;
    }
 }
 
 void Perceptron::subtract(vector<int> feature_vector){
    for (int feature: feature_vector){
-//       double value = weightVector[feature];
-//       weightVector[feature] = value-1;
        weightVector[feature]--;
    }
 }
 
 double Perceptron::score(vector<int> feature_vector) {
-     int sum = 0.0;
-//    double sum;
+     int sum = 0;
+    for (int feature: feature_vector) {
 
-//    for (int feature: feature_vector){
-//        if (!weightVector.count(feature)){
-//            initialize(feature);
-//            sum += weightVector[feature];
-//        }
-//        else {
-//            sum += weightVector[feature];
-//        }
-//    }
-    for (int feature: feature_vector){
-        sum += weightVector[feature];
+        if (feature >= weightVector.size()) {
+            weightVector.resize(weightVector.size() + 1);
+        } else {
+            sum += weightVector[feature];
+        }
     }
     return sum;
 }

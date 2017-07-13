@@ -1,10 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include "utils.h"
-#include "oracle.h"
-#include "Multiperceptron.h"
-#include "feature_ex.h"
 #include <chrono>
+#include <unordered_set>
 using namespace chrono;
 
 
@@ -13,63 +11,45 @@ int main() {
 
 
     string line;
-    bool oracle_bool = true;
     int c = 0;
     int f = 0;
     int sen_c = 0;
-    ifstream myfile ("../resource/wsj_train.first-1k.conll06");
     vector<vector<string>> sen_tokens;
+    vector<vector<string>> sen_tokens_dev;
     string type = "standard";
     vector<string> classnames {"shift","RA","LA"};
     Multiperceptron multiperceptron(classnames);
     unordered_map<std::string,int> feature_map;
+    vector<pair<Token,Token>> pred_parse_tree;
+    vector<pair<Token,Token>> gold_parse_tree;
+    int corr = 0;
+    int overall = 0;
 
 
     int max_iter = 1;
 
     for (int i = 0; i < max_iter; ++i) {
+        corr = 0;
+        overall = 0;
         cout << "...Epoch-" << i << "..." << endl;
 
-        int correct = 0;
+//        ifstream myfile ("/home/frosk/data/english/train/wsj_train.conll06");
+        ifstream myfile ("../resource/wsj_train.first-1k.conll06");
         if (myfile.is_open()) {
             while (getline(myfile, line)) {
                 if (line != "") {
-
                     c++;
                     vector<string> tokens = tokenizer(line, '\t');
                     sen_tokens.push_back(tokens);
                 }
                 else {
-                    vector<Token> tokens = make_token(sen_tokens);
-                    vector<vector<Token>> configuration = init_conf(tokens);
-                    vector<pair<Token, Token>> arc_set;
-
-
-//                  while buffer is not emtpy
-                    while (configuration[1].size() > 0) {
-
-                        if (oracle_bool) {
-
-                            string action = oracle(configuration, arc_set, type);
-                            vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
-                            vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
-                            string pred = multiperceptron.train(feature_vector, action);
-
-//                            cout << "gold: " << action << " pred: " << pred << endl;
-//                            print_parse(configuration,action);
-
-                            configuration = parser(configuration, action, type);
-
-                        } else {
-                            cout << "using perceptrion";
-
-
-                        }
-
-                    }
-
+                    pair<int,int> result = train_perceptron(sen_tokens, multiperceptron, type, feature_map);
+                    corr += result.first;
+                    overall += result.second;
 
                     sen_tokens.clear();
+
+                    // sentence finished
                     cout << "finished sentence: " << sen_c << endl;
                     sen_c++;
                     c = 1;
@@ -78,10 +58,18 @@ int main() {
 
                 f++;
             }
-            myfile.close();
+
+            // EPOCH finished
+            cout << "train correct: " << corr  << "/" << overall << endl;
         }
-        else cout << "Unable to open file";
+        else {
+            cout << "Unable to open train file";
+        }
+
+        myfile.close();
     }
+    dev_performance("..resource/wsj_dev.conll06.gold", multiperceptron, feature_map, type) ;
+
 
 
 

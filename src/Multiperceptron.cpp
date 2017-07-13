@@ -4,19 +4,6 @@
 
 #include "Multiperceptron.h"
 #include <iostream>
-#include <unordered_map>
-//class Multiperceptron {
-//public:
-//    vector<string> classnames;
-//    unordered_map<string,Perceptron> perceptrons;
-//
-//    Multiperceptron(vector<string> classnames);
-//    void train(vector<string> feature_vector);
-//    void learn_2(vector<string> feature_vector);
-//
-//private:
-//    void initperceptron();
-//};
 
 Multiperceptron::Multiperceptron(vector<string> inclassnames) {
     classnames = inclassnames;
@@ -50,12 +37,11 @@ string Multiperceptron::best_perceptron(vector<int> feature_vector) {
     for (string percectron_name: classnames ) {
         if (percectron_name != any_perceptron){
 
-            Perceptron cur_perceptron = perceptrons[percectron_name];
-            int cur_score = cur_perceptron.score(feature_vector);
+            int cur_score = perceptrons[percectron_name].score(feature_vector);
 
             if (cur_score > best_score) {
                 best_score = cur_score;
-                best_label = cur_perceptron.label;
+                best_label = perceptrons[percectron_name].label;
                 }
             }
     }
