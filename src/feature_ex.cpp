@@ -11,23 +11,77 @@ vector<string> feature_extraction(vector<vector<Token>> conf,
     vector<Token> stack = conf[0];
     vector<string> feature_vector;
 
-    for (int i = 0; i < 3; ++i) {
-        if (stack.size()>i) {
-            feature_vector.push_back("s" + to_string(stack[i].index) + stack[i].word);
-            feature_vector.push_back("s" + to_string(stack[i].index) + stack[i].pos);
-        }
 
-        else if (buffer.size()>i) {
-            feature_vector.push_back("b" + to_string(buffer[i].index) + buffer[i].word);
-            feature_vector.push_back("b" + to_string(buffer[i].index) + buffer[i].pos);
+    // Trigrams
+    for (int i = 0; i < 1; ++i) {
+        if (buffer.size() > i+2) {
+            // N0pN1pN2p
+            feature_vector.push_back("b" + to_string(i) + buffer[i].pos +
+                                     "b" + to_string(i + 1) + buffer[i + 1].pos +
+                                     "b" + to_string(i + 2) + buffer[i + 2].pos);
+        }
+        if (stack.size() > i && buffer.size()>i+1) {
+            // S0pN0pN1p
+            feature_vector.push_back("s" + to_string(i) + stack[i].pos +
+                                     "b" + to_string(i) + buffer[i].pos+
+                                     "b" + to_string(i+1) + buffer[i+1].pos);
+        }
+    }
+
+
+    // Bigrams
+    for (int i = 0; i < 1; ++i) {
+        if (stack.size()>i) {
+            // S0wpN0wp
+            feature_vector.push_back("s" + to_string(i) + stack[i].word + stack[i].pos +
+                                             "b" + to_string(i) + buffer[i].word + buffer[i].pos);
+            // S0wpN0w
+            feature_vector.push_back("s" + to_string(i) + stack[i].word + stack[i].pos +
+                                             "b" + to_string(i) + buffer[i].word);
+            // S0wN0w
+            feature_vector.push_back("s" + to_string(i) + stack[i].word +
+                                     "b" + to_string(i) + buffer[i].word + buffer[i].pos);
+            // S0wpN0p
+            feature_vector.push_back("s" + to_string(i) + stack[i].word + stack[i].pos +
+                                     "b" + to_string(i) +  buffer[i].pos);
+            // S0pN0wp
+            feature_vector.push_back("s" + to_string(i) + stack[i].pos +
+                                     "b" + to_string(i) + buffer[i].word + buffer[i].pos);
+            // S0wN0w
+            feature_vector.push_back("s" + to_string(i) + stack[i].word +
+                                     "b" + to_string(i) + buffer[i].word);
+            // S0pN0p
+            feature_vector.push_back("s" + to_string(i) + stack[i].pos +
+                                     "b" + to_string(i) + buffer[i].pos);
+            // N0pN1p
+            if (buffer.size()>i+1) {
+                feature_vector.push_back("b" + to_string(i) + buffer[i].pos +
+                                         "b" + to_string(i+1) + buffer[i + 1].pos);
+            }
         }
 
     }
 
-//    for ( pair<Token,Token> arc : arc_set){
-//        feature_vector.push_back(arc.first.word + arc.second.type + arc.second.word);
-//        feature_vector.push_back(arc.first.pos + arc.second.type  + arc.second.pos);
-//    }
+    // Unigrams
+    for (int i = 0; i < 3; ++i) {
+        if (stack.size()>i && i ==0) {
+            feature_vector.push_back("s" + to_string(i) + stack[i].word);
+            feature_vector.push_back("s" + to_string(i) + stack[i].pos);
+            feature_vector.push_back("s" + to_string(i) + stack[i].word + stack[i].pos);
+        }
+
+        if (buffer.size()>i) {
+            feature_vector.push_back("b" + to_string(i) + buffer[i].word);
+            feature_vector.push_back("b" + to_string(i) + buffer[i].pos);
+            feature_vector.push_back("b" + to_string(i) + buffer[i].word + buffer[i].pos);
+        }
+
+    }
+
+    for ( pair<Token,Token> arc : arc_set){
+        feature_vector.push_back(arc.first.word + arc.second.type + arc.second.word);
+        feature_vector.push_back(arc.first.pos + arc.second.type  + arc.second.pos);
+    }
 
     return feature_vector;
 }

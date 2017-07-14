@@ -67,7 +67,7 @@ int main() {
 
         myfile.close();
     }
-    dev_performance("..resource/wsj_dev.conll06.gold", multiperceptron, feature_map, type) ;
+//    dev_performance("..resource/wsj_dev.conll06.gold", multiperceptron, feature_map, type) ;
 
 
 
