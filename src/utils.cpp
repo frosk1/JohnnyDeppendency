@@ -54,7 +54,7 @@ void print_parse(vector<vector<Token>> configuration, string action){
     cout << "ACTION " << action << endl;
 }
 
-pair<int,int> train_perceptron(vector<vector<string>> sen_tokens,
+pair<int,int> parse_train(vector<vector<string>> sen_tokens,
             Multiperceptron& multiperceptron,
             string type,
             unordered_map<string,int>& feature_map){
@@ -109,6 +109,54 @@ pair<int, int> parse_dev(vector<vector<string>> sen_tokens,
     return make_pair(corr,all);
 }
 
+void train_model(string file_name, int max_iter,
+                 Multiperceptron& multiperceptron,
+                 unordered_map<string, int>& feature_map,
+                 string type) {
+
+    int corr = 0;
+    int overall = 0;
+    vector<vector<string>> sen_tokens;
+
+    string line;
+    int sen_c = 0;
+
+    for (int i = 0; i < max_iter; ++i) {
+        corr = 0;
+        overall = 0;
+        cout << "...Epoch-" << i << "..." << endl;
+        ifstream myfile (file_name);
+
+        if (myfile.is_open()) {
+            while (getline(myfile, line)) {
+                if (line != "") {
+                    vector<string> tokens = tokenizer(line, '\t');
+                    sen_tokens.push_back(tokens);
+                }
+                else {
+                    pair<int,int> result = parse_train(sen_tokens, multiperceptron, type, feature_map);
+                    corr += result.first;
+                    overall += result.second;
+
+                    // sentence finished
+                    // cout << "finished sentence: " << sen_c << endl;
+                    sen_tokens.clear();
+                    sen_c++;
+                }
+            }
+            // EPOCH finished
+            cout << "train acc: " << (float)corr/(float)overall << endl;
+            sen_c = 0;
+        }
+        else {
+            cout << "Unable to open train file";
+        }
+        myfile.close();
+    }
+    cout << "Finished Training with: " << max_iter << " Epochs" << endl;
+}
+
+
 void dev_performance(string file_name,
                       Multiperceptron multiperceptron,
                       unordered_map<string, int> feature_map,
@@ -119,7 +167,7 @@ void dev_performance(string file_name,
     vector<vector<string>> sen_tokens_dev;
 
     string line2;
-    ifstream devfile("../resource/wsj_dev.conll06.gold");
+    ifstream devfile(file_name);
 
     if (devfile.is_open()) {
         while (getline(devfile, line2)) {
@@ -137,8 +185,8 @@ void dev_performance(string file_name,
         }
     }
     else {
-        cout << "Unable to open dev file";
+        cout << "Unable to open dev file: " << file_name << endl;
     }
 
-    cout << "ACC: " << (float) corr / (float) overall << endl;
+    cout << "dev acc: " << (float) corr / (float) overall << endl;
 }
