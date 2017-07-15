@@ -1,5 +1,4 @@
 #include <iostream>
-#include <fstream>
 #include "utils.h"
 #include <chrono>
 using namespace chrono;
@@ -21,7 +20,7 @@ int main() {
     string train_1k =  "../resource/wsj_train.first-1k.conll06";
     string dev_gold = "../resource/wsj_dev.conll06.gold";
 
-    int max_iter = 4;
+    int max_iter = 1;
 
     train_model(train_1k, max_iter, multiperceptron, feature_map, type);
 

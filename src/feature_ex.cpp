@@ -4,6 +4,29 @@
 
 #include "feature_ex.h"
 
+
+pair<Token,Token> get_ld_rd(Token input_token,
+                                vector<pair<Token, Token>> arc_set){
+
+        int max_right = input_token.index;
+        int max_left = input_token.index;
+        Token ld;
+        Token rd;
+        for(pair<Token,Token> p : arc_set){
+            if (p.first.word == input_token.word){
+                if (p.second.index > p.first.index && p.second.index > max_right){
+                    rd = p.second;
+                    max_right = p.second.index;
+                }
+                else if (p.second.index< p.first.index && p.second.index < max_left){
+                    ld = p.second;
+                    max_left = p.second.index;
+                }
+            }
+        }
+        return make_pair(ld,rd);
+    };
+
 vector<string> feature_extraction(vector<vector<Token>> conf,
                                   vector<pair<Token,Token>> arc_set){
 
@@ -13,74 +36,103 @@ vector<string> feature_extraction(vector<vector<Token>> conf,
 
 
     // Trigrams
-    for (int i = 0; i < 1; ++i) {
-        if (buffer.size() > i+2) {
-            // N0pN1pN2p
-            feature_vector.push_back("b" + to_string(i) + buffer[i].pos +
-                                     "b" + to_string(i + 1) + buffer[i + 1].pos +
-                                     "b" + to_string(i + 2) + buffer[i + 2].pos);
+        if (buffer.size() >= 3) {
+            // B0pB1pB2p
+            feature_vector.push_back("b0" +  buffer[0].pos +
+                                     "b1" +  buffer[1].pos +
+                                     "b2" +  buffer[2].pos);
         }
-        if (stack.size() > i && buffer.size()>i+1) {
-            // S0pN0pN1p
-            feature_vector.push_back("s" + to_string(i) + stack[i].pos +
-                                     "b" + to_string(i) + buffer[i].pos+
-                                     "b" + to_string(i+1) + buffer[i+1].pos);
+        if (stack.size() > 0 && buffer.size() >= 2) {
+            // S0pB0pB1p
+            feature_vector.push_back("s0" + stack.back().pos +
+                                     "b0" + buffer[0].pos+
+                                     "b1" + buffer[1].pos);
         }
+
+
+        // Trigrams with ld and rd
+        if (stack.size() > 0) {
+
+            pair<Token, Token> s_ld_rd = get_ld_rd(stack.back(), arc_set);
+            Token ld_s0 = s_ld_rd.first;
+            Token rd_s0 = s_ld_rd.second;
+
+            pair<Token, Token> b_ld_rd = get_ld_rd(buffer[0], arc_set);
+            Token ld_b0 = b_ld_rd.first;
+
+
+
+
+            // as Root is the init value of default Token constructor
+            // it used in this case to determine if a left/right dependent
+            // has been found, if Root is ld or rd, it means ld and rd
+            // has been initialized empty and there is no ld/rd !!!
+            if (ld_s0.word != "Root") {
+                // S0pS0lpB0p;
+                feature_vector.push_back("s0"  + stack.back().pos +
+                                         "s0"  + ld_s0.pos +
+                                         "b0"  + buffer[0].pos);
+            }
+            if (rd_s0.word != "Root") {
+                // S0pS0rpB0p
+                feature_vector.push_back("s0" + stack.back().pos +
+                                         "s0" + rd_s0.pos +
+                                         "b0" + buffer[0].pos);
+            }
+            if (ld_b0.word != "Root") {
+                // S0pN0pB0lp
+                feature_vector.push_back("s0" +  stack.back().pos +
+                                         "b0" +  buffer[0].pos +
+                                         "b0" +  ld_b0.pos);
+            }
     }
 
 
     // Bigrams
-    for (int i = 0; i < 1; ++i) {
-        if (stack.size()>i) {
-            // S0wpN0wp
-            feature_vector.push_back("s" + to_string(i) + stack[i].word + stack[i].pos +
-                                             "b" + to_string(i) + buffer[i].word + buffer[i].pos);
-            // S0wpN0w
-            feature_vector.push_back("s" + to_string(i) + stack[i].word + stack[i].pos +
-                                             "b" + to_string(i) + buffer[i].word);
-            // S0wN0w
-            feature_vector.push_back("s" + to_string(i) + stack[i].word +
-                                     "b" + to_string(i) + buffer[i].word + buffer[i].pos);
-            // S0wpN0p
-            feature_vector.push_back("s" + to_string(i) + stack[i].word + stack[i].pos +
-                                     "b" + to_string(i) +  buffer[i].pos);
-            // S0pN0wp
-            feature_vector.push_back("s" + to_string(i) + stack[i].pos +
-                                     "b" + to_string(i) + buffer[i].word + buffer[i].pos);
-            // S0wN0w
-            feature_vector.push_back("s" + to_string(i) + stack[i].word +
-                                     "b" + to_string(i) + buffer[i].word);
-            // S0pN0p
-            feature_vector.push_back("s" + to_string(i) + stack[i].pos +
-                                     "b" + to_string(i) + buffer[i].pos);
-            // N0pN1p
-            if (buffer.size()>i+1) {
-                feature_vector.push_back("b" + to_string(i) + buffer[i].pos +
-                                         "b" + to_string(i+1) + buffer[i + 1].pos);
-            }
+    if (stack.size()>0) {
+        // S0wpB0wp
+        feature_vector.push_back("s0" + stack.back().word + stack.back().pos +
+                                 "b0" + buffer[0].word + buffer[0].pos);
+        // S0wpB0w
+        feature_vector.push_back("s0" + stack.back().word + stack.back().pos +
+                                 "b0" + buffer[0].word);
+        // S0wpB0p
+        feature_vector.push_back("s0" + stack.back().word + stack.back().pos +
+                                 "b0" + buffer[0].pos);
+        // S0pB0wp
+        feature_vector.push_back("s0" + stack.back().pos +
+                                 "b0" + buffer[0].word + buffer[0].pos);
+        // S0wB0w
+        feature_vector.push_back("s0" + stack.back().word +
+                                 "b0" + buffer[0].word);
+        // S0pB0p
+        feature_vector.push_back("s0" + stack.back().pos +
+                                 "b0" + buffer[0].pos);
+    }
+    if (buffer.size()>=2) {
+            // B0pB1p
+            feature_vector.push_back("b0" + buffer[0].pos +
+                                     "b1" + buffer[1].pos);
         }
 
-    }
 
     // Unigrams
-    for (int i = 0; i < 3; ++i) {
-        if (stack.size()>i && i ==0) {
-            feature_vector.push_back("s" + to_string(i) + stack[i].word);
-            feature_vector.push_back("s" + to_string(i) + stack[i].pos);
-            feature_vector.push_back("s" + to_string(i) + stack[i].word + stack[i].pos);
+    if (stack.size()>0) {
+        feature_vector.push_back("s0" + stack.back().word);
+        feature_vector.push_back("s0" + stack.back().pos);
+        feature_vector.push_back("s0" + stack.back().word + stack.back().pos);
         }
 
+    for (int i = 0; i < 3; ++i) {
         if (buffer.size()>i) {
             feature_vector.push_back("b" + to_string(i) + buffer[i].word);
             feature_vector.push_back("b" + to_string(i) + buffer[i].pos);
             feature_vector.push_back("b" + to_string(i) + buffer[i].word + buffer[i].pos);
         }
+        else{
+            break;
+        }
 
-    }
-
-    for ( pair<Token,Token> arc : arc_set){
-        feature_vector.push_back(arc.first.word + arc.second.type + arc.second.word);
-        feature_vector.push_back(arc.first.pos + arc.second.type  + arc.second.pos);
     }
 
     return feature_vector;
