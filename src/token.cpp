@@ -18,6 +18,7 @@ Token::Token () {
         word = "Root";
         base = "root";
         pos = "root";
+        head = -1;
     };
 
 Token::Token (int indexparam, string wordparam, string baseparam,
@@ -25,5 +26,15 @@ Token::Token (int indexparam, string wordparam, string baseparam,
 
                         index = indexparam, word = wordparam,
                         base = baseparam, pos = posparam,
-                        head = headparam, type = typeparam;};
+                        head = headparam, type = typeparam;
+};
+
+Token::Token (int indexparam, string wordparam,
+              string baseparam, string posparam){
+        index = indexparam, word = wordparam,
+        base = baseparam, pos = posparam,
+        type = "";
+};
+
+
 

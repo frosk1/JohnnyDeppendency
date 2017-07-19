@@ -13,16 +13,20 @@ using namespace std;
 
 vector<string> tokenizer(string sent, char delimiter);
 vector<Token> make_token(vector<vector<string>> sen_tokens);
+vector<Token> make_token_blind(vector<vector<string>> sen_tokens);
 vector<vector<Token>> init_conf(vector<Token> tokens);
 
 void print_parse(vector<vector<Token>> configuration, string action);
 
-void dev_performance(string file_name,
-                     Multiperceptron multiperceptron,
-                     unordered_map<string, int> feature_map,
-                     string type);
 
-pair<int, int> parse_dev(vector<vector<string>> sen_tokens,
+void parse_file(string in_file_name,
+                string out_file_name,
+                Multiperceptron multiperceptron,
+                unordered_map<string, int> feature_map,
+                string type);
+
+
+vector<pair<Token,Token>> parse_blind_file(vector<vector<string>> sen_tokens,
                          Multiperceptron& multiperceptron,
                          string type,
                          unordered_map<string,int>& feature_map);
@@ -36,5 +40,15 @@ pair<int,int> parse_train(vector<vector<string>> sen_tokens,
                                Multiperceptron& multiperceptron,
                                string type,
                                unordered_map<string,int>& feature_map);
+
+pair<int,int> parse_test(vector<vector<string>> sen_tokens,
+                           Multiperceptron& multiperceptron,
+                           string type,
+                           unordered_map<string,int>& feature_map);
+
+void test_model(string file_name,
+                Multiperceptron& multiperceptron,
+                unordered_map<string, int>& feature_map,
+                string type);
 
 #endif //JOHNNYDEPPENDENCY_UTILS_H

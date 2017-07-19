@@ -13,6 +13,12 @@ public:
 public:
     string word, base, pos, type;
     Token();
-    Token(int , string , string , string , int ,string );
+    Token(int , string , string , string , int , string );
+    Token(int , string , string , string);
+
+    bool operator < (const Token& str) const
+    {
+        return (index < str.index);
+    }
 };
 #endif //JOHNNYDEPPENDENCY_TOKEN_H

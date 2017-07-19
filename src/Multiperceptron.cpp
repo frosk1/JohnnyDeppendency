@@ -13,7 +13,7 @@ Multiperceptron::Multiperceptron(vector<string> inclassnames) {
 void Multiperceptron::initperceptron() {
    for (string name: classnames){
        Perceptron perceptron(name);
-       perceptrons.emplace(name, perceptron);
+       perceptrons[name] = perceptron;
    }
 }
 
@@ -31,13 +31,16 @@ string Multiperceptron::train(vector<int> feature_vector, string gold_label) {
 string Multiperceptron::best_perceptron(vector<int> feature_vector) {
     string any_perceptron = classnames[0];
 
+//    cout << "....................................." << endl;
     double best_score = perceptrons[any_perceptron].score(feature_vector);
     string best_label = perceptrons[any_perceptron].label;
+//    cout << best_label << "::" << best_score << endl;
 
     for (string percectron_name: classnames ) {
         if (percectron_name != any_perceptron){
 
             int cur_score = perceptrons[percectron_name].score(feature_vector);
+//            cout << perceptrons[percectron_name].label << ":: " << cur_score << endl;
 
             if (cur_score > best_score) {
                 best_score = cur_score;
@@ -47,6 +50,8 @@ string Multiperceptron::best_perceptron(vector<int> feature_vector) {
     }
 
 
+//    cout << "best: " << best_label << endl;
+//    cout << "....................................." << endl;
     return best_label;
 
 }

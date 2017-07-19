@@ -63,6 +63,8 @@ vector<string> feature_extraction(vector<vector<Token>> conf,
 
 
 
+
+
             // as Root is the init value of default Token constructor
             // it used in this case to determine if a left/right dependent
             // has been found, if Root is ld or rd, it means ld and rd
@@ -96,6 +98,9 @@ vector<string> feature_extraction(vector<vector<Token>> conf,
         // S0wpB0w
         feature_vector.push_back("s0" + stack.back().word + stack.back().pos +
                                  "b0" + buffer[0].word);
+        //S0wB0wp;
+        feature_vector.push_back("s0" + stack.back().word + stack.back().pos +
+                                 "b0" + buffer[0].word + buffer[0].pos);
         // S0wpB0p
         feature_vector.push_back("s0" + stack.back().word + stack.back().pos +
                                  "b0" + buffer[0].pos);
@@ -118,6 +123,12 @@ vector<string> feature_extraction(vector<vector<Token>> conf,
 
     // Unigrams
     if (stack.size()>0) {
+
+        if(stack.back().word == "Root" && buffer.size()>0){
+            feature_vector.push_back("s0rootbne");
+        }
+
+
         feature_vector.push_back("s0" + stack.back().word);
         feature_vector.push_back("s0" + stack.back().pos);
         feature_vector.push_back("s0" + stack.back().word + stack.back().pos);
