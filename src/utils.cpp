@@ -72,7 +72,8 @@ void print_parse(vector<vector<Token>> configuration, string action){
 pair<int,int> parse_train(vector<vector<string>> sen_tokens,
             Multiperceptron& multiperceptron,
             string type,
-            unordered_map<string,int>& feature_map){
+            unordered_map<string,int>& feature_map,
+            bool labeled){
 
     vector<Token> tokens = make_token(sen_tokens);
     vector<vector<Token>> configuration = init_conf(tokens);
@@ -86,7 +87,7 @@ pair<int,int> parse_train(vector<vector<string>> sen_tokens,
         vector<string> s_feature_vector = feature_extraction(configuration, arc_set);
         vector<int> feature_vector = feature_to_index(s_feature_vector, feature_map);
 
-        string gold_label= oracle(configuration, arc_set, type);
+        string gold_label= oracle(configuration, arc_set, type, labeled);
         string pred = multiperceptron.train(feature_vector, gold_label);
 
         configuration = parser(configuration, gold_label, arc_set, type);
@@ -116,11 +117,6 @@ vector<pair<Token,Token>> parse_blind_file(vector<vector<string>> sen_tokens,
 
         string gold_label = multiperceptron.best_perceptron(feature_vector);
 
-//        string pred = oracle(configuration, arc_set, type);
-
-//       if (pred==action) {corr++;}
-//       all++;
-
         configuration = parser(configuration, gold_label, arc_set, type);
     }
 
@@ -130,7 +126,8 @@ vector<pair<Token,Token>> parse_blind_file(vector<vector<string>> sen_tokens,
 void train_model(string file_name, int max_iter,
                  Multiperceptron& multiperceptron,
                  unordered_map<string, int>& feature_map,
-                 string type) {
+                 string type,
+                 bool labeled) {
 
     int corr = 0;
     int overall = 0;
@@ -152,7 +149,7 @@ void train_model(string file_name, int max_iter,
                     sen_tokens.push_back(tokens);
                 }
                 else {
-                    pair<int,int> result = parse_train(sen_tokens, multiperceptron, type, feature_map);
+                    pair<int,int> result = parse_train(sen_tokens, multiperceptron, type, feature_map, labeled);
                     corr += result.first;
                     overall += result.second;
 
@@ -185,13 +182,13 @@ void parse_file(string in_file_name,
     vector<vector<string>> sen_tokens_dev;
 
     string line2;
-    ifstream devfile(in_file_name);
+    ifstream input_file(in_file_name);
     ofstream out_file;
     out_file.open (out_file_name);
 //    out_file << "Writing this to a file.\n";
 
-    if (devfile.is_open()) {
-        while (getline(devfile, line2)) {
+    if (input_file.is_open()) {
+        while (getline(input_file, line2)) {
             if (line2 != "") {
                 vector<string> tokens = tokenizer(line2, '\t');
                 sen_tokens_dev.push_back(tokens);
@@ -202,10 +199,24 @@ void parse_file(string in_file_name,
                 for (pair<Token,Token> p : arc_set) dependents.push_back(p.second);
                 sort(dependents.begin(),dependents.end());
                 for (Token t : dependents) {
-                    string cur_line = to_string(t.index) + "\t" + t.word + "\t" + t.base
-                                      + "\t" + t.pos + "\t" + "_" + "\t" + "_" + "\t" +
-                                      to_string(t.head) + "\t" + t.type + "\t" + "_" +
-                                      "\t" + "_" + "\n";
+                    string cur_line;
+
+                    // if type is "" than it is unlabeled parsing
+                    if (t.type.size()==0){
+                        cur_line = to_string(t.index) + "\t" + t.word + "\t" + t.base
+                                          + "\t" + t.pos + "\t" + "_" + "\t" + "_" + "\t" +
+                                          to_string(t.head) + "\t" + "_" + "\t" + "_" +
+                                          "\t" + "_" + "\n";
+                    }
+
+                        // if type is not empty than it is labeled parsing
+                    else {
+
+                        cur_line = to_string(t.index) + "\t" + t.word + "\t" + t.base
+                                          + "\t" + t.pos + "\t" + "_" + "\t" + "_" + "\t" +
+                                          to_string(t.head) + "\t" + t.type + "\t" + "_" +
+                                          "\t" + "_" + "\n";
+                    }
                     out_file << (cur_line);
                 }
                 out_file << ("\n");
@@ -221,7 +232,8 @@ void parse_file(string in_file_name,
 pair<int,int> parse_test(vector<vector<string>> sen_tokens,
             Multiperceptron& multiperceptron,
             string type,
-            unordered_map<string,int>& feature_map){
+            unordered_map<string,int>& feature_map,
+            bool labeled){
 
     vector<Token> tokens = make_token(sen_tokens);
     vector<vector<Token>> configuration = init_conf(tokens);
@@ -237,7 +249,7 @@ pair<int,int> parse_test(vector<vector<string>> sen_tokens,
 
         string pred = multiperceptron.best_perceptron(feature_vector);
 
-        string gold_label = oracle(configuration, arc_set, type);
+        string gold_label = oracle(configuration, arc_set, type, labeled);
 
        if (pred == gold_label) corr++;
        all++;
@@ -251,7 +263,8 @@ pair<int,int> parse_test(vector<vector<string>> sen_tokens,
 void test_model(string file_name,
                  Multiperceptron& multiperceptron,
                  unordered_map<string, int>& feature_map,
-                 string type) {
+                 string type,
+                 bool labeled) {
 
     int corr = 0;
     int overall = 0;
@@ -269,7 +282,7 @@ void test_model(string file_name,
                 sen_tokens.push_back(tokens);
             }
             else {
-                pair<int,int> result = parse_test(sen_tokens, multiperceptron, type, feature_map);
+                pair<int,int> result = parse_test(sen_tokens, multiperceptron, type, feature_map, labeled);
                 corr += result.first;
                 overall += result.second;
 

@@ -34,21 +34,25 @@ vector<pair<Token,Token>> parse_blind_file(vector<vector<string>> sen_tokens,
 void train_model(string file_name, int max_iter,
                  Multiperceptron& multiperceptron,
                  unordered_map<string, int>& feature_map,
-                 string type);
+                 string type,
+                 bool labeled);
 
 pair<int,int> parse_train(vector<vector<string>> sen_tokens,
                                Multiperceptron& multiperceptron,
                                string type,
-                               unordered_map<string,int>& feature_map);
+                               unordered_map<string,int>& feature_map,
+                               bool labeled);
 
 pair<int,int> parse_test(vector<vector<string>> sen_tokens,
                            Multiperceptron& multiperceptron,
                            string type,
-                           unordered_map<string,int>& feature_map);
+                           unordered_map<string,int>& feature_map,
+                           bool labeled);
 
 void test_model(string file_name,
                 Multiperceptron& multiperceptron,
                 unordered_map<string, int>& feature_map,
-                string type);
+                string type,
+                bool labeled);
 
 #endif //JOHNNYDEPPENDENCY_UTILS_H

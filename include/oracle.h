@@ -11,10 +11,11 @@ using namespace std;
 
 string oracle(vector<vector<Token>> configuration,
               vector<pair<Token,Token>>& arc_set,
-              string type);
+              string parse_type,
+              bool labeled);
 
 vector<vector<Token>> parser(vector<vector<Token>> configuration,
                              string action,
                              vector<pair<Token,Token>>& arc_set,
-                             string type);
+                             string parse_type);
 #endif //JOHNNYDEPPENDENCY_ORACLE_H

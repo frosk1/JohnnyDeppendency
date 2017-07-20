@@ -49,7 +49,8 @@ bool stackisnotroot(Token top_stack){
 
 string standard_action(
         vector<vector<Token>> configuration,
-        string type)
+        string parse_type,
+        bool labeled)
 {
 
     vector<Token> stack = configuration[0];
@@ -68,12 +69,20 @@ string standard_action(
 
 
     if (stack_top_head == buffer_front_ind && stackisnotroot(stack_top)) {
-//        return "LA";
-        return "LA"+stack_top.type;
+        if (labeled) {
+            return "LA"+stack_top.type;
+        }
+        else {
+        return "LA";
+        }
 
-    } else if (buffer_front_head == stack_top_ind &&  hasallchildren(buffer_front_ind, buffer, type)) {
-//        return "RA";
-        return "RA"+buffer_front.type;
+    } else if (buffer_front_head == stack_top_ind &&  hasallchildren(buffer_front_ind, buffer, parse_type)) {
+        if (labeled) {
+            return "RA"+buffer_front.type;
+        }
+        else {
+            return "RA";
+        }
 
     } else {
 
@@ -84,7 +93,9 @@ string standard_action(
 string eager_action(
         vector<vector<Token>> configuration,
         vector<pair<Token,Token>>& arc_set,
-        string type)
+        string parse_type,
+        bool labeled)
+
 {
 
     vector<Token> stack = configuration[0];
@@ -98,14 +109,22 @@ string eager_action(
 
 
     if (stack_top_head == buffer_front_ind && stackisnotroot(stack_top)) {
-//        return "LA";
-        return "LA"+stack_top.type;
+        if (labeled){
+            return "LA"+stack_top.type;
+        }
+        else {
+            return "LA";
+        }
     }
     else if (buffer_front_head == stack_top_ind) {
-//        return "RA";
-        return "RA"+buffer_front.type;
+        if (labeled){
+            return "RA"+buffer_front.type;
+        }
+        else {
+            return "RA";
+        }
     }
-    else if( hashead(stack_top_ind, arc_set) && hasallchildren(stack_top_ind, buffer, type)){
+    else if( hashead(stack_top_ind, arc_set) && hasallchildren(stack_top_ind, buffer, parse_type)){
             return "reduce";
         }
     else {
@@ -116,13 +135,14 @@ string eager_action(
 
 string oracle(vector<vector<Token>> configuration,
               vector<pair<Token,Token>>& arc_set,
-              string type){
+              string parse_type,
+              bool labeled){
 
-    if (type == "standard") {
-        return standard_action(configuration, type);
+    if (parse_type == "standard") {
+        return standard_action(configuration, parse_type, labeled);
     }
     else {
-        return eager_action(configuration, arc_set, type);
+        return eager_action(configuration, arc_set, parse_type, labeled);
     }
 }
 
