@@ -51,7 +51,12 @@ vector<string> init_classnames_labeled(string lang, string parse_type){
         l_classnames.push_back("shift");
     }
     else if (parse_type == "eager"){
-        cout << "eager" << endl;
+        for (string label: labels) {
+            l_classnames.push_back("RA"+label);
+            l_classnames.push_back("LA"+label);
+        }
+        l_classnames.push_back("shift");
+        l_classnames.push_back("reduce");
     }
     else {
         cout << "not valid type: "<< parse_type << endl;

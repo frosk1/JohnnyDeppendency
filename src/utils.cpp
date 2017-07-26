@@ -89,12 +89,24 @@ pair<int,int> parse_train(vector<vector<string>> sen_tokens,
 
         string gold_label= oracle(configuration, arc_set, type, labeled);
         string pred = multiperceptron.train(feature_vector, gold_label);
+//       cout << "stack_before: " << configuration[0].size() << " buffer_before: " << configuration[1].size() << endl;
 
         configuration = parser(configuration, gold_label, arc_set, type);
+//       cout << "stack_after: " << configuration[0].size() << " buffer_after: " << configuration[1].size() << endl;
 
         if (gold_label == pred){ corr ++;}
         overall++;
     }
+//    if (configuration[0].size()>1) {
+//        cout << configuration[0].size() << endl;
+//        for (Token t:tokens) cout << t.word << " ";
+//        cout << endl;
+//    }
+//    if (configuration[0].size()>1 && tokens.size() < 20) {
+//        cout << configuration[0].size() << endl;
+//        for (Token t: tokens) cout << t.word << " ";
+//    }
+//    cout << endl;
     return make_pair(corr,overall);
 }
 
@@ -108,6 +120,7 @@ vector<pair<Token,Token>> parse_blind_file(vector<vector<string>> sen_tokens,
     vector<pair<Token, Token>> arc_set;
     int corr = 0;
     int all = 0;
+    bool non_projective = false;
 
 //     while buffer is not emtpy
    while (configuration[1].size() > 0) {
@@ -118,6 +131,17 @@ vector<pair<Token,Token>> parse_blind_file(vector<vector<string>> sen_tokens,
         string gold_label = multiperceptron.best_perceptron(feature_vector);
 
         configuration = parser(configuration, gold_label, arc_set, type);
+    }
+
+    if (configuration[0].size()>1){
+        for (Token t: configuration[0]){
+            if (t.word != "Root") {
+                Token new_token;
+                t.head = -1;
+                arc_set.push_back(make_pair(new_token, t));
+            }
+        }
+//        cout << configuration[0].size() << endl;
     }
 
     return arc_set;
@@ -154,7 +178,7 @@ void train_model(string file_name, int max_iter,
                     overall += result.second;
 
                     // sentence finished
-                    // cout << "finished sentence: " << sen_c << endl;
+//                     cout << "finished sentence: " << sen_c << endl;
                     sen_tokens.clear();
                     sen_c++;
                 }
@@ -195,30 +219,51 @@ void parse_file(string in_file_name,
             }
             else {
                 vector<pair<Token,Token>> arc_set = parse_blind_file(sen_tokens_dev, multiperceptron, type, feature_map);
+
                 vector<Token> dependents;
                 for (pair<Token,Token> p : arc_set) dependents.push_back(p.second);
                 sort(dependents.begin(),dependents.end());
+
+                string cur_line;
                 for (Token t : dependents) {
-                    string cur_line;
 
                     // if type is "" than it is unlabeled parsing
-                    if (t.type.size()==0){
-                        cur_line = to_string(t.index) + "\t" + t.word + "\t" + t.base
-                                          + "\t" + t.pos + "\t" + "_" + "\t" + "_" + "\t" +
-                                          to_string(t.head) + "\t" + "_" + "\t" + "_" +
-                                          "\t" + "_" + "\n";
+                    if (t.type.size() == 0) {
+                        if (t.head == -1){
+                            cur_line = to_string(t.index) + "\t" + t.word + "\t" + t.base
+                                       + "\t" + t.pos + "\t" + "_" + "\t" + "_" + "\t" +
+                                       "_" + "\t" + "_" + "\t" + "_" +
+                                       "\t" + "_" + "\n";
+                        }
+                        else {
+                            cur_line = to_string(t.index) + "\t" + t.word + "\t" + t.base
+                                       + "\t" + t.pos + "\t" + "_" + "\t" + "_" + "\t" +
+                                       to_string(t.head) + "\t" + "_" + "\t" + "_" +
+                                       "\t" + "_" + "\n";
+                        }
                     }
 
                         // if type is not empty than it is labeled parsing
                     else {
+                        if (t.head == -1){
+                            cur_line = to_string(t.index) + "\t" + t.word + "\t" + t.base
+                                       + "\t" + t.pos + "\t" + "_" + "\t" + "_" + "\t" +
+                                       "_" + "\t" + "_" + "\t" + "_" +
+                                       "\t" + "_" + "\n";
 
-                        cur_line = to_string(t.index) + "\t" + t.word + "\t" + t.base
-                                          + "\t" + t.pos + "\t" + "_" + "\t" + "_" + "\t" +
-                                          to_string(t.head) + "\t" + t.type + "\t" + "_" +
-                                          "\t" + "_" + "\n";
+                        }
+
+                        else {
+                            cur_line = to_string(t.index) + "\t" + t.word + "\t" + t.base
+                                       + "\t" + t.pos + "\t" + "_" + "\t" + "_" + "\t" +
+                                       to_string(t.head) + "\t" + t.type + "\t" + "_" +
+                                       "\t" + "_" + "\n";
+                        }
                     }
                     out_file << (cur_line);
                 }
+
+
                 out_file << ("\n");
                 sen_tokens_dev.clear();
             }

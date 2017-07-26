@@ -56,6 +56,7 @@ string standard_action(
     vector<Token> stack = configuration[0];
 
     if (stack.size() == 0){
+//        cout << "0 shift" << endl;
         return "shift";
     }
 
@@ -73,7 +74,7 @@ string standard_action(
             return "LA"+stack_top.type;
         }
         else {
-        return "LA";
+            return "LA";
         }
 
     } else if (buffer_front_head == stack_top_ind &&  hasallchildren(buffer_front_ind, buffer, parse_type)) {
@@ -84,10 +85,16 @@ string standard_action(
             return "RA";
         }
 
-    } else {
+    } else if (buffer.size()>1){
+//        cout << "buf_sizeinfunc:"<<  buffer.size() << endl;
+//        cout << "yep_shift" << endl;
 
         return "shift";
     }
+//    else {
+////        cout << "nothing trifft zu" << endl;
+//    }
+
 }
 
 string eager_action(
@@ -156,7 +163,7 @@ vector<vector<Token>> parser(
     vector<Token> buffer = configuration[1];
     string action;
 
-    if(gold_label.compare("shift") != 0) {
+    if(gold_label.compare("shift") != 0 && gold_label.compare("reduce") != 0) {
         action = gold_label.substr(0, 2);
         }
     else{
@@ -175,7 +182,7 @@ vector<vector<Token>> parser(
                 stack.back().head = buffer[0].index;
             }
 
-           arc_set.push_back( pair<Token,Token> (buffer[0], stack.back()));
+           arc_set.push_back(make_pair(buffer[0], stack.back()));
            //      pop top most token on the stack
            stack.pop_back();
        }
@@ -187,7 +194,8 @@ vector<vector<Token>> parser(
                buffer[0].type = gold_label.substr(2,gold_label.size());
                buffer[0].head = stack.back().index;
            }
-           arc_set.push_back( pair<Token,Token> (stack.back(), buffer[0]));
+           arc_set.push_back( make_pair(stack.back(), buffer[0]));
+
 //           move top stack to front buffer; deleting front buffer with assignment
            buffer[0] = stack.back();
            stack.pop_back();
@@ -203,14 +211,26 @@ vector<vector<Token>> parser(
 
        if (action == "LA" || action == "reduce") {
            if (action == "LA") {
-               arc_set.push_back( pair<Token,Token> (buffer[0], stack.back()));
+
+               if (stack.back().type.empty()){
+                    stack.back().type = gold_label.substr(2,gold_label.size());
+                    stack.back().head = buffer[0].index;
+                }
+
+               arc_set.push_back( make_pair(buffer[0], stack.back()));
            }
            //      pop top most token on the stack
            stack.pop_back();
        }
        else if (action == "RA" || action == "shift") {
            if(action == "RA"){
-               arc_set.push_back( pair<Token,Token> (stack.back(), buffer[0]));
+
+               if (buffer[0].type.empty()){
+                    buffer[0].type = gold_label.substr(2,gold_label.size());
+                    buffer[0].head = stack.back().index;
+                }
+
+               arc_set.push_back( make_pair(stack.back(), buffer[0]));
            }
 //           move front of buffer to top of stack; no stack deletion, but buffer front deletion
            stack.push_back(buffer[0]);
