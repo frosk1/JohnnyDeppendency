@@ -1,66 +1,80 @@
 #include <iostream>
 #include "utils.h"
 #include <chrono>
+#include "fstream"
 #include "parser_config.h"
+#include <unistd.h>
 using namespace chrono;
 
 
-int main() {
+int main(int argc, char* argv[]) {
     high_resolution_clock ::time_point start = high_resolution_clock::now();
 
-    vector<string> clabelded_s = init_classnames_labeled("de","standard");
+    int c;
+    unordered_map<string,string> cfg;
+    while ((c = getopt (argc, argv, "c")) != -1) {
+        switch (c) {
 
-//    string eager= "eager";
-//    vector<string> eager_classnames {"reduce","shift","RA","LA"};
-    string standard = "standard";
-//    vector<string> standard_classnames {"shift","RA","LA"};
+            case 'c':
+                cfg = config_parser(argv[2]);
+                break;
 
-    string train_all = "/home/frosk/data/english/train/wsj_train.conll06";
-//    string train_all = "/home/users0/wesslijn/dependency-parsing/data/english/train/wsj_train.conll06";
-    string train_all_ger = "/home/frosk/data/german/train/tiger-2.2.train.conll06";
-//    string train_all_ger = "/home/users0/wesslijn/dependency-parsing/data/german/train/tiger-2.2.train.conll06";
+            default:
+                cout << "Non valid option: "  << argv[1] << endl;
+                cout << "Use -c path_to_cfg_file !" << endl;
+                abort();
+        }
 
-//    string train_all_only_p = "/home/frosk/data/english/train/wsj_train.only-projective.conll06";
-    string train_1k =  "../resource/wsj_train.first-1k.conll06";
-    string train_1k_ger = "/home/frosk/data/german/train/tiger-2.2.train.first-1k.conll06";
-//    string train_5k_ger = "/home/frosk/data/german/train/tiger-2.2.train.first-5k.conll06";
-    string train_5k_ger = "/home/users0/wesslijn/dependency-parsing/data/german/train/tiger-2.2.train.first-5k.conll06";
-
-//    string train_1k_only_proj =  "../resource/wsj_train.only-projective.first-1k.conll06";
-    string dev_blind = "../resource/wsj_dev.conll06.blind";
-    string dev_gold = "../resource/wsj_dev.conll06.gold";
-    string dev_blind_ger = "/home/frosk/data/german/dev/tiger-2.2.dev.conll06.blind";
-    string dev_gold_ger = "/home/frosk/data/german/dev/tiger-2.2.dev.conll06.gold";
-
-    string test = "../resource/wsj_test.conll06.blind";
-//    string test = "/home/users0/wesslijn/dependency-parsing/data/english/test/wsj_test.conll06.blind";
-//    string test_ger = "/home/frosk/data/german/test/tiger-2.2.test.conll06.blind";
-//    string test_ger = "/home/users0/wesslijn/dependency-parsing/data/german/test/tiger-2.2.test.conll06.blind";
+    }
 
 
-    bool labeled = true;
+    string type;
+    bool labeled;
+    vector<string> classnames;
+    int max_iter = stoi (cfg["max_iter"]);
 
 
+    if (cfg["parse_out"]=="labeled"){
+        labeled=true;
+    }
+    else if (cfg["parse_out"]=="unlabeled"){
+        labeled=false;
+    }
 
-    Multiperceptron multiperceptron(clabelded_s);
-//    Multiperceptron multiperceptron(clabelded_s);
+    if (cfg["parse_type"]=="standard" && labeled){
+        classnames = init_classnames_labeled(cfg["parse_lang"], cfg["parse_type"]);
+
+    }
+    else if (cfg["parse_type"]=="standard" && !labeled){
+        classnames = {"shift","RA","LA"};
+    }
+
+    else if (cfg["parse_type"]=="eager" && labeled){
+        classnames = init_classnames_labeled(cfg["parse_lang"], cfg["parse_type"]);
+
+    }
+    else if (cfg["parse_type"]=="eager" && !labeled){
+        classnames = {"reduce","shift","RA","LA"};
+    }
+
+
+    cout << "++++ Johnny Dependency ++++" << endl;
+    cout << "LANG:\t" << cfg["parse_lang"] << endl;
+    cout << "OUT:\t" << cfg["parse_out"] << endl;
+    cout << "TYPE:\t" << cfg["parse_type"] << endl;
+    cout << "Iter:\t" << cfg["max_iter"] << endl << endl;
+    cout << "Train_File: " << cfg["train_file"] << endl;
+    cout << "Test_File: " << cfg["test_file"] << endl;
+    cout << endl << "### Start Training ###" << endl;
+
+
+    Multiperceptron multiperceptron(classnames);
     unordered_map<string,int> feature_map;
 
+    string outfile = cfg["parse_lang"] + "_" + cfg["parse_out"] + "_" + cfg["parse_type"] + ".txt";
 
-    int max_iter = 2;
-
-    train_model(train_all_ger, max_iter, multiperceptron, feature_map, standard, labeled);
-
-    // unlabeled, method knows if labeled or unlabeled from the model classes
-    parse_file(dev_blind_ger,"de_labeled_standard_dev_final.txt", multiperceptron, feature_map, standard);
-//    parse_file(dev_blind_ger,"de_unlabeled_standard_dev.txt", multiperceptron, feature_map, standard);
-
-   // labeled, method knows if labeled or unlabeled from the model classes
-//    parse_file(test,"en_labeled_standard.txt", multiperceptron, feature_map, eager);
-
-
-//     test_model(dev_gold, multiperceptron, feature_map, standard, labeled);
-
+    train_model(cfg["train_file"], max_iter, multiperceptron, feature_map, cfg["parse_type"], labeled);
+    parse_file(cfg["test_file"], outfile, multiperceptron, feature_map, cfg["parse_type"]);
 
 
 

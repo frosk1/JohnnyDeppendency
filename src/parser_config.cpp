@@ -1,5 +1,4 @@
 #include "parser_config.h"
-#include "iostream"
 using namespace std;
 vector<string> universal_deplabel = {"acl","advcl","advmod","amod","appos",
                                      "aux","case","cc","ccomp","clf","compound",

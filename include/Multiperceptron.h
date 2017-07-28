@@ -5,6 +5,7 @@
 #include "perceptron.h"
 #include <vector>
 #include <unordered_map>
+#include <iostream>
 using namespace std;
 #ifndef JOHNNYDEPPENDENCY_MULTIPERCEPTRON_H
 #define JOHNNYDEPPENDENCY_MULTIPERCEPTRON_H

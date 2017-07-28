@@ -6,6 +6,11 @@
 #include "oracle.h"
 #include "Multiperceptron.h"
 #include "feature_ex.h"
+#include <string>
+#include <fstream>
+#include <algorithm>
+#include "sstream"
+
 using namespace std;
 
 #ifndef JOHNNYDEPPENDENCY_UTILS_H
@@ -18,6 +23,7 @@ vector<vector<Token>> init_conf(vector<Token> tokens);
 
 void print_parse(vector<vector<Token>> configuration, string action);
 
+unordered_map<string,string> config_parser(string cfg_file);
 
 void parse_file(string in_file_name,
                 string out_file_name,

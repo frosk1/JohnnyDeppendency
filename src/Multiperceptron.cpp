@@ -3,7 +3,6 @@
 //
 
 #include "Multiperceptron.h"
-#include <iostream>
 
 Multiperceptron::Multiperceptron(vector<string> inclassnames) {
     classnames = inclassnames;

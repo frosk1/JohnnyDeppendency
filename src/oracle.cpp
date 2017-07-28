@@ -2,7 +2,6 @@
 // Created by frosk on 09.06.17.
 //
 #include "oracle.h"
-#include <typeinfo>
 
 
 bool hasallchildren(int cur_token_ind, vector<Token> buffer, string type){

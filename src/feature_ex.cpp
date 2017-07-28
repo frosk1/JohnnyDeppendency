@@ -148,6 +148,7 @@ vector<string> feature_extraction(vector<vector<Token>> conf,
     // size
     feature_vector.push_back("s"+to_string(stack.size()));
     feature_vector.push_back("b"+to_string(buffer.size()));
+    feature_vector.push_back("s"+to_string(stack.size())+"b"+to_string(buffer.size()));
 
     return feature_vector;
 }

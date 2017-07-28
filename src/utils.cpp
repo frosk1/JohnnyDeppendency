@@ -1,7 +1,35 @@
-#include <string>
 #include "utils.h"
-#include <fstream>
-#include <algorithm>
+
+
+unordered_map<string,string> config_parser(string cfg_file) {
+
+//    string cfg_file = "../.JohnnyDeppendencyrc";
+    string line;
+    ifstream myfile (cfg_file);
+    unordered_map<string,string> cfg;
+
+    if (myfile.is_open()) {
+        while (getline(myfile, line)) {
+
+            istringstream is_line(line);
+            string key;
+
+            if( getline(is_line, key, '=') ) {
+                string value;
+
+                if( getline(is_line, value) )
+                    cfg[key] = value;
+            }
+
+        }
+    }
+    else{
+        cout << "unable to open config file \" " + cfg_file + "\""<< endl;
+    }
+    myfile.close();
+
+    return cfg;
+};
 
 
 vector<string> tokenizer(string sent, char delimiter) {
