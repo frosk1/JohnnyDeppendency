@@ -48,7 +48,7 @@ Johnny D. comes with a default config file **.JohnnyDependencyrc** :
 parse_type=standard
 parse_lang=en
 parse_out=unlabeled
-max_iter=1
+max_iter=15
 train_file=../resource/wsj_train.first-1k.conll06
 test_file=../resource/wsj_dev.conll06.blind
 ```
