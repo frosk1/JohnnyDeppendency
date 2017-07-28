@@ -62,6 +62,15 @@ train_file= (path to a ConLL format annotated file)
 test_file= (path to a ConLL format non annotated file)
 ```
 
+
+
+#### Feature Set
+The transition based parser Johnny Dependnecy is trained on the baseline
+feature template from **"Transition-based Dependency Parsing with Rich
+Non-local Features"** by Yue Zhang and Joakim Nivre, 2011.
+(http://www.aclweb.org/anthology/P11-2033)
+
+
 ## Authors
 
 >- **Jan Weßling**
