@@ -28,8 +28,9 @@ file(GLOB SOURCE_FILES "src/*.cpp")
 
 add_executable(JohnnyDeppendency ${SOURCE_FILES})
 ```
+There is an default CMakeLists.txt in the repository, so use it!
 
-#### Generate Binaries
+#### Generate Binaries (Compilation)
 ```
 cd {../ProjectRoot}
 cmake .
@@ -37,10 +38,29 @@ make
 ```
 #### Run
 ```
-./JohnnyDependency
+./JohnnyDependency -c ../path_to_cfg_file
 ```
 
+#### Config File
+Johnny D. comes with a default config file **.JohnnyDependencyrc** :
 
+```
+parse_type=standard
+parse_lang=en
+parse_out=unlabeled
+max_iter=1
+train_file=../resource/wsj_train.first-1k.conll06
+test_file=../resource/wsj_dev.conll06.blind
+```
+The following options are available:
+```
+parse_type=(standard, eager)
+parse_lang=(en, de)
+parse_out=(labeled, unlabeled)
+max_iter=(1, to infinity and beyond!)
+train_file= (path to a ConLL format annotated file)
+test_file= (path to a ConLL format non annotated file)
+```
 
 ## Authors
 

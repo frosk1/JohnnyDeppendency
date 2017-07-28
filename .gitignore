@@ -36,7 +36,7 @@
 .idea/
 
 # ignore cmkae conf
-CMakeLists.txt
+#CMakeLists.txt
 
 # ignore cmake build debug dir
 cmake-build-debug/
